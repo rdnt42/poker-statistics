@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import MainStatistics from "@/components/GamesStatistics.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <MainStatistics />
   </main>
 </template>

@@ -1,7 +1,7 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <main>
+    <PlayersStatistics />
+  </main>
 </template>
 
 <style>
@@ -13,3 +13,6 @@
   }
 }
 </style>
+<script setup lang="ts">
+import PlayersStatistics from "@/components/PlayersStatistics.vue";
+</script>
