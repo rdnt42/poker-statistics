@@ -1,59 +1,44 @@
 <template>
   <v-card>
     <v-tabs
-      v-model="tab"
+      v-model="activeTab"
       align-tabs="center"
       bg-color="deep-purple-accent-4"
       stacked
     >
-      <v-tab value="tab-1">
-        <v-icon icon="mdi-phone"></v-icon>
-
-        Recents
+      <v-tab value="0">
+        <v-icon icon="mdi-poker-chip"></v-icon>
+        Games
       </v-tab>
 
-      <v-tab value="tab-2">
-        <v-icon icon="mdi-heart"></v-icon>
-
-        Favorites
-      </v-tab>
-
-      <v-tab value="tab-3">
-        <v-icon icon="mdi-account-box"></v-icon>
-
-        Nearby
+      <v-tab value="1">
+        <v-icon icon="mdi-account-group"></v-icon>
+        Players
       </v-tab>
     </v-tabs>
 
-    <v-tabs-window v-model="tab">
-      <v-tabs-window-item
-        v-for="i in 3"
-        :key="i"
-        :value="'tab-' + i"
-      >
-        <v-card>
-          <v-card-text>{{ text }}</v-card-text>
-        </v-card>
-      </v-tabs-window-item>
+    <v-tabs-window v-model="activeTab">
+      <v-window-item v-for="(tab, index) in tabs" :key="index" :value="index">
+        <component :is="tab.component" />
+      </v-window-item>
     </v-tabs-window>
   </v-card>
 </template>
 
-<script setup>
-import { ref } from 'vue'
-
-const tab = ref(null)
-
-const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-</script>
-
 <script>
+import { markRaw } from "vue";
+import GamesStatistics from "@/components/GamesStatistics.vue";
+import PlayersStatistics from "@/components/PlayersStatistics.vue";
+
 export default {
-  data () {
+  data() {
     return {
-      tab: null,
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-    }
+      activeTab: 0,
+      tabs: [
+        {name: "Games", component: markRaw(GamesStatistics)},
+        {name: "Players", component: markRaw(PlayersStatistics)},
+      ],
+    };
   },
-}
+};
 </script>
