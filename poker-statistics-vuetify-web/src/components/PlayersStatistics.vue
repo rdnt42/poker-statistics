@@ -1,41 +1,41 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="items"
+    :items="players"
     item-key="name"
     items-per-page="5"
   ></v-data-table>
 </template>
 
-<script setup>
-const headers = [
-  {title: 'Name', value: 'name'},
-  {title: 'Nickname', value: 'nickname'},
-  {title: 'Total IN', value: 'totalIn'},
-  {title: 'Total OUT', value: 'totalOut'},
-]
+<script>
+import {ref, onMounted} from "vue";
+import pokerClient from "@/services/PokerClient.ts"; // Пример: используем axios для запросов
 
-const items = [
-  {
-    id: '40d9044b-cb15-404f-83d0-8718ed51d7da',
-    totalIn: "30",
-    totalOut: "30",
-    name: 'Артем Л.',
-    nickname: 'radiant42',
+export default {
+  setup() {
+    const players = ref([]);
+    const headers = [
+      {title: 'Name', value: 'name'},
+      {title: 'Nickname', value: 'nickname'},
+      {title: 'Total IN', value: 'totalIn'},
+      {title: 'Total OUT', value: 'totalOut'},
+      {title: 'Profit', key: 'profit', value: item => `${item.totalIn - item.totalOut}`},
+    ]
+
+    onMounted(async () => {
+      try {
+        const response = await pokerClient.get("/api/v1/players");
+        players.value = response.data;
+      } catch (error) {
+        console.error("Error when fetch games:", error);
+      }
+    });
+
+    return {
+      players,
+      headers,
+    };
   },
-  {
-    id: '5096a4a5-2b4b-46d7-acdc-0e7ad31168dc',
-    totalIn: "40",
-    totalOut: "10",
-    name: 'Mister Twister.',
-    nickname: '',
-  },
-  {
-    id: 'e37cee87-ddd0-4724-9372-0bb6cc15087a',
-    totalIn: "40",
-    totalOut: "90",
-    name: 'Koala',
-    nickname: 'mr.koala',
-  },
-]
+};
+
 </script>

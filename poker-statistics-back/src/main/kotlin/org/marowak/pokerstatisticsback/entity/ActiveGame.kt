@@ -11,7 +11,7 @@ import java.util.UUID
 @Entity
 class ActiveGame(
     @Id
-    val id: UUID? = null,
+    val id: UUID,
 
     @Column(nullable = false)
     val startDate: OffsetDateTime
