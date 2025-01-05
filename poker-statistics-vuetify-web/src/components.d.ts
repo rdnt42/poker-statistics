@@ -7,11 +7,10 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AcriveGames: typeof import('./components/AcriveGames.vue')['default']
     ActiveGames: typeof import('./components/ActiveGames.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
-    GamesStatistics: typeof import('./components/GamesStatistics.vue')['default']
-    PlayersStatistics: typeof import('./components/PlayersStatistics.vue')['default']
+    HistoricalGames: typeof import('./components/HistoricalGames.vue')['default']
+    Players: typeof import('./components/Players.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tabs: typeof import('./components/Tabs.vue')['default']

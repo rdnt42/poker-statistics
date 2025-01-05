@@ -26,17 +26,17 @@
 </template>
 
 <script>
-import { markRaw } from "vue";
-import GamesStatistics from "@/components/GamesStatistics.vue";
-import PlayersStatistics from "@/components/PlayersStatistics.vue";
+import {markRaw} from "vue";
+import Players from "@/components/Players.vue";
+import GamesPage from "@/pages/GamesPage.vue";
 
 export default {
   data() {
     return {
       activeTab: 0,
       tabs: [
-        {name: "Games", component: markRaw(GamesStatistics)},
-        {name: "Players", component: markRaw(PlayersStatistics)},
+        {name: "Games", component: markRaw(GamesPage)},
+        {name: "Players", component: markRaw(Players)},
       ],
     };
   },
