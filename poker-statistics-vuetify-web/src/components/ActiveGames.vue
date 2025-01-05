@@ -2,10 +2,17 @@
   <v-data-table
     :headers="headers"
     :items="games"
-    item-key="name"
+    item-key="id"
     items-per-page="5"
-    @dblclick="onRowDblClick"
-  ></v-data-table>
+    v-model="selectedRow"
+    class="elevation-1"
+  >
+    <template v-slot:item="{ item }">
+      <tr @dblclick="onRowDblClick(item)">
+        <td>{{ item.startDate }}</td>
+      </tr>
+    </template>
+  </v-data-table>
   <ActiveGameModal
     :isOpen="isModalOpen"
     :selectedRow="selectedRow"
@@ -35,10 +42,9 @@ const isModalOpen = ref(false);
 const selectedRow = ref(null);
 
 // Обработчик двойного клика на строке
-const onRowDblClick = (event, row) => {
-  console.log(row)
-  console.log(event)
-  selectedRow.value = row; // Сохраняем выбранную строку
-  isModalOpen.value = true; // Открываем модальное окно
+const onRowDblClick = (row) => {
+  selectedRow.value = toRaw(row);
+  isModalOpen.value = true;
 };
+
 </script>

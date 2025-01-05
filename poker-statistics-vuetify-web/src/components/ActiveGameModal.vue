@@ -40,7 +40,6 @@ watch(() => props.isOpen, (newVal) => {
 watch(localIsOpen, (newVal) => {
   emit('update:isOpen', newVal);
   if (newVal && props.selectedRow) {
-    console.log(props.selectedRow)
     fetchAdditionalData(props.selectedRow.id);
   }
 });
@@ -50,9 +49,8 @@ const fetchAdditionalData = async (id) => {
   error.value = null;
   additionalData.value = null;
   try {
-    const response = await pokerClient.get(`/api/v1/active-games/${id}`);
+    const response = await pokerClient.get(`/api/v1/active-games/${id}/full-info`);
     additionalData.value = response.data;
-    console.log(response)
   } catch (err) {
     error.value = err.message;
   } finally {

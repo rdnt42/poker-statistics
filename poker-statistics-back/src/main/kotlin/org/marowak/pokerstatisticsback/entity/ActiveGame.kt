@@ -1,9 +1,6 @@
 package org.marowak.pokerstatisticsback.entity
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -14,5 +11,8 @@ class ActiveGame(
     val id: UUID,
 
     @Column(nullable = false)
-    val startDate: OffsetDateTime
+    val startDate: OffsetDateTime,
+
+    @OneToMany(fetch = FetchType.LAZY)
+    val activePlayers: List<PlayerInGame>
 )
