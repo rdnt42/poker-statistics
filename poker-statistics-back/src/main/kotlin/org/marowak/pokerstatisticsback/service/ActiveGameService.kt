@@ -20,4 +20,8 @@ class ActiveGameService(
 
         return game
     }
+
+    fun getById(id: UUID): ActiveGame {
+        return activeGameRepository.findById(id).orElseThrow()
+    }
 }

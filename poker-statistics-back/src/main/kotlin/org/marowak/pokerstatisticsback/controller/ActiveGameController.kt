@@ -2,10 +2,8 @@ package org.marowak.pokerstatisticsback.controller
 
 import org.marowak.pokerstatisticsback.entity.ActiveGame
 import org.marowak.pokerstatisticsback.service.ActiveGameService
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.util.*
 
 @RestController
 @RequestMapping("/api/v1/active-games")
@@ -15,6 +13,11 @@ class ActiveGameController(
     @GetMapping
     fun getAll(): List<ActiveGame> {
         return activeGameService.getAll()
+    }
+
+    @GetMapping("/{id}")
+    fun create(@PathVariable id: UUID): ActiveGame {
+        return activeGameService.getById(id)
     }
 
     @PostMapping

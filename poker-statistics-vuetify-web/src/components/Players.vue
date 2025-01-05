@@ -3,7 +3,7 @@
     :headers="headers"
     :items="players"
     item-key="name"
-    items-per-page="5"
+    items-per-page="10"
   ></v-data-table>
 </template>
 
