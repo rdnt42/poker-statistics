@@ -2,7 +2,6 @@ package org.marowak.pokerstatisticsback.controller
 
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameDto
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameFullDto
-import org.marowak.pokerstatisticsback.entity.ActiveGame
 import org.marowak.pokerstatisticsback.service.ActiveGameService
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -28,7 +27,7 @@ class ActiveGameController(
     }
 
     @PostMapping
-    fun create(): ActiveGame {
+    fun create(): ActiveGameDto {
         return activeGameService.crateNewGame()
     }
 }

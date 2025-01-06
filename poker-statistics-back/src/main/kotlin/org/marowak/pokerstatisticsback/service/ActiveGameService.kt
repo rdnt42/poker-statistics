@@ -1,7 +1,6 @@
 package org.marowak.pokerstatisticsback.service
 
-import org.marowak.pokerstatisticsback.dto.response.ActiveGameDto
-import org.marowak.pokerstatisticsback.dto.response.ActiveGameFullDto
+import org.marowak.pokerstatisticsback.dto.response.*
 import org.marowak.pokerstatisticsback.entity.ActiveGame
 import org.marowak.pokerstatisticsback.repository.ActiveGameRepository
 import org.springframework.stereotype.Service
@@ -14,24 +13,27 @@ class ActiveGameService(
 ) {
     fun getAll(): List<ActiveGameDto> {
         return activeGameRepository.findAll()
-            .map { ActiveGameDto(it.id, it.startDate) }
+            .map { it.toDto() }
     }
 
-    fun crateNewGame(): ActiveGame {
+    fun crateNewGame(): ActiveGameDto {
         val game = ActiveGame(UUID.randomUUID(), OffsetDateTime.now(), emptyList())
-        activeGameRepository.save(game)
-
-        return game
+        return activeGameRepository
+            .save(game)
+            .toDto()
     }
 
     fun getById(id: UUID): ActiveGameDto {
-        val activeGame =  activeGameRepository.findById(id).orElseThrow()
-        return ActiveGameDto(activeGame.id, activeGame.startDate)
+        return activeGameRepository
+            .findById(id)
+            .orElseThrow()
+            .toDto()
     }
 
     fun getFullInfoById(id: UUID): ActiveGameFullDto {
-        val activeGame = activeGameRepository.findById(id).orElseThrow()
-
-        return ActiveGameFullDto(activeGame.id, activeGame.startDate, activeGame.activePlayers)
+        return activeGameRepository
+            .findById(id)
+            .orElseThrow()
+            .toFullDto()
     }
 }
