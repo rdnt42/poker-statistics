@@ -7,35 +7,26 @@
   ></v-data-table>
 </template>
 
-<script>
+<script lang="ts" setup>
 import {ref, onMounted} from "vue";
-import pokerClient from "@/services/PokerClient.ts"; // Пример: используем axios для запросов
+import type {PlayerResponse} from "@/types/PlayerResponse";
+import PokerService from "@/services/PokerService";
 
-export default {
-  setup() {
-    const players = ref([]);
-    const headers = [
-      {title: 'Name', value: 'name'},
-      {title: 'Nickname', value: 'nickname'},
-      {title: 'Total IN', value: 'totalIn'},
-      {title: 'Total OUT', value: 'totalOut'},
-      {title: 'Profit', key: 'profit', value: item => `${item.totalIn - item.totalOut}`},
-    ]
+const players = ref<PlayerResponse[]>([]);
+const headers = [
+  {title: 'Name', value: 'name'},
+  {title: 'Nickname', value: 'nickname'},
+  {title: 'Total IN', value: 'totalIn'},
+  {title: 'Total OUT', value: 'totalOut'},
+  {title: 'Profit', key: 'profit', value: (item: PlayerResponse) => `${item.totalIn - item.totalOut}`},
+];
 
-    onMounted(async () => {
-      try {
-        const response = await pokerClient.get("/api/v1/players");
-        players.value = response.data;
-      } catch (error) {
-        console.error("Error when fetch games:", error);
-      }
-    });
-
-    return {
-      players,
-      headers,
-    };
-  },
-};
+onMounted(async () => {
+  try {
+    players.value = await PokerService.getAllPlayers();
+  } catch (error) {
+    console.error("Error when fetch games:", error);
+  }
+});
 
 </script>

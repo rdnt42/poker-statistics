@@ -12,8 +12,9 @@ import java.util.*
 class ActiveGameService(
     private val activeGameRepository: ActiveGameRepository
 ) {
-    fun getAll(): List<ActiveGame> {
+    fun getAll(): List<ActiveGameDto> {
         return activeGameRepository.findAll()
+            .map { ActiveGameDto(it.id, it.startDate) }
     }
 
     fun crateNewGame(): ActiveGame {

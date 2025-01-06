@@ -20,29 +20,32 @@
   />
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import {ref, onMounted} from "vue";
-import pokerClient from "@/services/PokerClient.ts";
+import PokerService from "@/services/PokerService";
+import type {ActiveGameResponse} from "@/types/ActiveGameResponse";
 
-const games = ref([]);
+const games = ref<ActiveGameResponse[]>([]);
 const headers = [
-  {title: 'Start date', key: 'startDate', value: item => new Date(item.startDate).toLocaleString()},
-]
+  {
+    title: 'Start date',
+    key: 'startDate',
+    value: (item: ActiveGameResponse) => new Date(item.startDate).toLocaleString()
+  },
+];
 
 onMounted(async () => {
   try {
-    const response = await pokerClient.get("/api/v1/active-games");
-    games.value = response.data;
+    games.value = await PokerService.getAllActiveGames();
   } catch (error) {
     console.error("Error when fetch games:", error);
   }
 });
 
-const isModalOpen = ref(false);
-const selectedRow = ref(null);
+const isModalOpen = ref<boolean>(false);
+const selectedRow = ref<ActiveGameResponse | null>(null);
 
-// Обработчик двойного клика на строке
-const onRowDblClick = (row) => {
+const onRowDblClick = (row: any) => {
   selectedRow.value = toRaw(row);
   isModalOpen.value = true;
 };

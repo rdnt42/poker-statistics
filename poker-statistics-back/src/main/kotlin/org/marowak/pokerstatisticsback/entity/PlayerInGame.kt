@@ -12,7 +12,7 @@ class PlayerInGame(
 
     val cashIn: Int,
 
-    val cashOut: Int,
+    val cashOut: Int?,
 
     @Enumerated(EnumType.STRING)
     val status: PlayerStatusType

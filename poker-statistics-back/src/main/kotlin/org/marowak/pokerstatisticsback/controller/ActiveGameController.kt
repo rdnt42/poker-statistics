@@ -13,7 +13,7 @@ class ActiveGameController(
     private val activeGameService: ActiveGameService
 ) {
     @GetMapping
-    fun getAll(): List<ActiveGame> {
+    fun getAll(): List<ActiveGameDto> {
         return activeGameService.getAll()
     }
 

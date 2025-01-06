@@ -13,6 +13,7 @@ class ActiveGame(
     @Column(nullable = false)
     val startDate: OffsetDateTime,
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "active_game_id")
+    @OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     val activePlayers: List<PlayerInGame>
 )

@@ -16,20 +16,21 @@
   </v-dialog>
 </template>
 
-<script setup>
-import {ref, watch} from 'vue';
-import pokerClient from "@/services/PokerClient.ts";
+<script lang="ts" setup>
+import {type PropType, ref, watch} from 'vue';
+import PokerService from "@/services/PokerService";
+import type {ActiveGameResponse} from "@/types/ActiveGameResponse";
 
 const props = defineProps({
   isOpen: Boolean,
-  selectedRow: Object,
+  selectedRow: Object as PropType<ActiveGameResponse | null>,
 });
 
 const emit = defineEmits(['update:isOpen']);
 
 const loading = ref(false);
 const error = ref(null);
-const additionalData = ref(null);
+const additionalData = ref<ActiveGameResponse | null>(null);
 
 const localIsOpen = ref(props.isOpen);
 
@@ -44,14 +45,13 @@ watch(localIsOpen, (newVal) => {
   }
 });
 
-const fetchAdditionalData = async (id) => {
+const fetchAdditionalData = async (id: string) => {
   loading.value = true;
   error.value = null;
   additionalData.value = null;
   try {
-    const response = await pokerClient.get(`/api/v1/active-games/${id}/full-info`);
-    additionalData.value = response.data;
-  } catch (err) {
+    additionalData.value = await PokerService.getActiveGameFullInfo(id);
+  } catch (err: any) {
     error.value = err.message;
   } finally {
     loading.value = false;

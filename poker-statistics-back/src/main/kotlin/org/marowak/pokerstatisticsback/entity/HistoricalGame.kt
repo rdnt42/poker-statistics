@@ -10,7 +10,7 @@ import java.util.*
 @Entity
 class HistoricalGame(
     @Id
-    val id: UUID? = null,
+    val id: UUID,
 
     val startDate: OffsetDateTime,
 

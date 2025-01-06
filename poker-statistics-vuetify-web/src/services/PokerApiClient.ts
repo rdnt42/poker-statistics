@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const pokerClient = axios.create({
+const pokerApiClient = axios.create({
   baseURL: "http://localhost:8080",
   timeout: 10000,
   headers: {
@@ -8,4 +8,4 @@ const pokerClient = axios.create({
   },
 });
 
-export default pokerClient;
+export default pokerApiClient;

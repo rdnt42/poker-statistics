@@ -1,5 +1,5 @@
 drop type if exists player_status;
-create type player_status as enum ('active', 'finished');
+create type player_status as enum ('ACTIVE', 'FINISHED');
 
 create table if not exists players_in_game
 (
