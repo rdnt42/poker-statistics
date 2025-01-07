@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ActiveGameModal: typeof import('./components/ActiveGameModal.vue')['default']
     ActiveGames: typeof import('./components/ActiveGames.vue')['default']
+    AddActivePlayer: typeof import('./components/AddActivePlayer.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     HistoricalGames: typeof import('./components/HistoricalGames.vue')['default']
     Players: typeof import('./components/Players.vue')['default']

@@ -15,7 +15,7 @@ data class PlayerInGameDto(
 
     val name: String,
 
-    val nickName: String,
+    val nickname: String,
 )
 
 fun PlayerInGame.toDto(): PlayerInGameDto {
@@ -25,6 +25,6 @@ fun PlayerInGame.toDto(): PlayerInGameDto {
         cashOut = cashOut,
         status = status,
         name = player.name,
-        nickName = player.nickname,
+        nickname = player.nickname,
     )
 }

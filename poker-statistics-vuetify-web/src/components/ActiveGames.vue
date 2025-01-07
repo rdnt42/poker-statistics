@@ -4,7 +4,7 @@
     :items="games"
     item-key="id"
     items-per-page="5"
-    v-model="selectedRow"
+    v-model:selectedItem="selectedRow"
     class="elevation-1"
   >
     <template v-slot:item="{ item }">
@@ -46,7 +46,7 @@ const isModalOpen = ref<boolean>(false);
 const selectedRow = ref<ActiveGameResponse | null>(null);
 
 const onRowDblClick = (row: any) => {
-  selectedRow.value = toRaw(row);
+  selectedRow.value = row;
   isModalOpen.value = true;
 };
 
