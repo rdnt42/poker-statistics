@@ -1,5 +1,6 @@
 package org.marowak.pokerstatisticsback.controller
 
+import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameDto
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameFullDto
 import org.marowak.pokerstatisticsback.service.ActiveGameService
@@ -28,6 +29,14 @@ class ActiveGameController(
 
     @PostMapping
     fun create(): ActiveGameDto {
-        return activeGameService.crateNewGame()
+        return activeGameService.createNewGame()
+    }
+
+    @PostMapping("/{id}/add-existed-player")
+    fun addExistedPlayer(
+        @PathVariable id: UUID,
+        @RequestBody request: AddExistedPlayerToGameDto
+    ): ActiveGameFullDto {
+        return activeGameService.addExistedPlayerToGame(id, request)
     }
 }

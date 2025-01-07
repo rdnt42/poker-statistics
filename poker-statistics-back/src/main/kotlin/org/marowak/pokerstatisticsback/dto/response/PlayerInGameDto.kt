@@ -24,7 +24,8 @@ fun PlayerInGame.toDto(): PlayerInGameDto {
         cashIn = cashIn,
         cashOut = cashOut,
         status = status,
-        name = player.name,
-        nickname = player.nickname,
+        // TODO
+        name = player!!.name,
+        nickname = player!!.nickname,
     )
 }

@@ -12,12 +12,21 @@ class PlayerInGame(
     val id: UUID,
 
     @PrimaryKeyJoinColumn
-    @OneToOne(fetch = FetchType.EAGER)
-    val player: Player,
+    @OneToOne(fetch = FetchType.EAGER, optional = false)
+    val player: Player? = null,
+
+    val playerId: UUID,
+
+    @JoinColumn(name = "active_game_id", insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    val activeGame: ActiveGame? = null,
+
+    @Column(name = "active_game_id")
+    val activeGameId: UUID,
 
     val cashIn: Int,
 
-    val cashOut: Int?,
+    val cashOut: Int? = null,
 
     @Enumerated(EnumType.STRING)
     val status: PlayerStatusType,

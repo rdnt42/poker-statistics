@@ -23,6 +23,7 @@ class PokerService {
     const response = await pokerClient.get("/api/v1/players");
     return response.data;
   }
+
 }
 
 export default new PokerService();
