@@ -1,6 +1,8 @@
 package org.marowak.pokerstatisticsback.entity
 
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcType
+import org.hibernate.dialect.PostgreSQLEnumJdbcType
 import org.marowak.pokerstatisticsback.entity.type.PlayerStatusType
 import java.util.*
 
@@ -15,8 +17,6 @@ class PlayerInGame(
     @OneToOne(fetch = FetchType.EAGER, optional = false)
     val player: Player? = null,
 
-    val playerId: UUID,
-
     @JoinColumn(name = "active_game_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     val activeGame: ActiveGame? = null,
@@ -28,6 +28,7 @@ class PlayerInGame(
 
     val cashOut: Int? = null,
 
+    @JdbcType(PostgreSQLEnumJdbcType::class)
     @Enumerated(EnumType.STRING)
     val status: PlayerStatusType,
 )

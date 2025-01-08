@@ -6,7 +6,10 @@
         <p v-if="loading">Loading...</p>
         <p v-else-if="error">Error: {{ error }}</p>
         <div v-else>
-          <AddActivePlayer/>
+          <AddActivePlayer
+          :game="selectedRow ? {id: selectedRow.id, startDate: selectedRow.startDate} : null"
+          @data-updated="handleAddActivePlayerEvent"
+          />
           <v-table>
             <thead>
             <tr>
@@ -51,21 +54,21 @@
 
 <script lang="ts" setup>
 import {type PropType, ref, watch} from 'vue';
-import PokerService from "@/services/PokerService";
-import type {ActiveGameResponse} from "@/types/ActiveGameResponse";
+import pokerService from "@/services/PokerService";
+import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {PlayerInGameResponse} from "@/types/PlayerInGameResponse";
 import AddActivePlayer from "@/components/AddActivePlayer.vue";
 
 const props = defineProps({
   isOpen: Boolean,
-  selectedRow: Object as PropType<ActiveGameResponse | null>,
+  selectedRow: Object as PropType<ActiveGameFullResponse | null>,
 });
 
 const emit = defineEmits(['update:isOpen']);
 
 const loading = ref(false);
 const error = ref(null);
-const activeGame = ref<ActiveGameResponse | null>(null);
+const activeGame = ref<ActiveGameFullResponse | null>(null);
 const players = ref<PlayerInGameResponse[] | null>(null);
 
 const localIsOpen = ref(props.isOpen);
@@ -86,7 +89,7 @@ const fetchAdditionalData = async (id: string) => {
   error.value = null;
   activeGame.value = null;
   try {
-    activeGame.value = await PokerService.getActiveGameFullInfo(id);
+    activeGame.value = await pokerService.getActiveGameFullInfo(id);
     players.value = activeGame.value.players;
   } catch (err: any) {
     error.value = err.message;
@@ -97,5 +100,11 @@ const fetchAdditionalData = async (id: string) => {
 
 const closeModal = () => {
   localIsOpen.value = false;
+};
+
+const handleAddActivePlayerEvent = () => {
+  if (props.selectedRow) {
+    fetchAdditionalData(props.selectedRow.id);
+  }
 };
 </script>

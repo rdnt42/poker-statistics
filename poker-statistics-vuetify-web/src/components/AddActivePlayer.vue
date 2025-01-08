@@ -48,15 +48,20 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from 'vue';
-import PokerService from "@/services/PokerService";
+import {ref, onMounted, type PropType} from 'vue';
+import pokerService from "@/services/PokerService";
 
 type PlayerData = { id: string | null, name: string | null, nickname: string | null };
+type GameData = { id: string, startDate: Date };
 const nullPlayer = {
   id: null, name: '-- Create new player --', nickname: null
 }
+const props = defineProps({
+  game: Object as PropType<GameData | null>,
+});
+const emit = defineEmits(['data-updated']);
 
-const players = ref<PlayerData  []>([]);
+const players = ref<PlayerData[]>([]);
 const selectedPlayer = ref<PlayerData>(nullPlayer);
 const cashIn = ref<number>(0);
 const playerName = ref<string | null>(null);
@@ -65,11 +70,11 @@ const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const submitting = ref<boolean>(false);
 
-const fetchPlayers = async () => {
+const fetchGame = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const playersData = (await PokerService.getAllPlayers()).map((player) => ({
+    const playersData = (await pokerService.getAllPlayers()).map((player) => ({
       id: player.id,
       name: player.name,
       nickname: player.nickname,
@@ -87,15 +92,17 @@ const fetchPlayers = async () => {
 };
 
 const submitForm = async () => {
+  if(props.game === null || props.game === undefined) throw new Error('Active game cannot be null');
   submitting.value = true;
 
   try {
-    console.log(`selectedPlayer`, selectedPlayer.value);
-    // await PokerService.addPlayerToGame({
-    //   playerId: selectedPlayerId.value,
-    //   cashIn: cashIn.value,
-    // });
-    alert("Player added successfully!");
+    if (selectedPlayer.value.id === null) {
+
+    } else {
+      await pokerService.addExistedPlayerToGame(props.game.id, selectedPlayer.value.id, cashIn.value);
+    }
+    emit('data-updated');
+    console.log('send update')
     resetForm();
   } catch (err: any) {
     alert(`Failed to add player: ${err.message}`);
@@ -140,7 +147,7 @@ const isInProcessing = computed((): boolean => {
 });
 
 onMounted(() => {
-  fetchPlayers();
+  fetchGame();
 });
 </script>
 
@@ -149,6 +156,7 @@ onMounted(() => {
   background-color: #007bff;
   color: white;
 }
+
 .v-btn[disabled] {
   background-color: grey;
 }

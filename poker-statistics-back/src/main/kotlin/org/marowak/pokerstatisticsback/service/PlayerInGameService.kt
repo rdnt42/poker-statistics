@@ -5,6 +5,7 @@ import org.marowak.pokerstatisticsback.entity.type.PlayerStatusType
 import org.marowak.pokerstatisticsback.repository.PlayerInGameRepository
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 @Service
 class PlayerInGameService(
@@ -12,8 +13,7 @@ class PlayerInGameService(
 ) {
     fun create(playerId: UUID, activeGameId: UUID, cashIn: Int): PlayerInGame {
         val player = PlayerInGame(
-            id = UUID.randomUUID(),
-            playerId = playerId,
+            id = playerId,
             cashIn = cashIn,
             activeGameId = activeGameId,
             status = PlayerStatusType.ACTIVE,
@@ -22,7 +22,7 @@ class PlayerInGameService(
         return playerInGameRepository.save(player)
     }
 
-    fun findByPlayerIdOrNull(playerId: UUID): PlayerInGame? {
-        return playerInGameRepository.findByPlayerId(playerId).get()
+    fun findByPlayerIdOrNull(id: UUID): PlayerInGame? {
+        return playerInGameRepository.findById(id).getOrNull()
     }
 }

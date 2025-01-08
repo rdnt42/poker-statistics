@@ -45,7 +45,7 @@ class ActiveGameService(
         val (playerId, cashIn) = request
         val game = activeGameRepository.findById(id).orElseThrow()
         playerInGameService.findByPlayerIdOrNull(playerId)?.let {
-            throw IllegalStateException("Player ${it.playerId} already have active game")
+            throw IllegalStateException("Player ${it.id} already have active game")
         }
 
         playerInGameService.create(playerId, game.id, cashIn)

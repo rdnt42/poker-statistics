@@ -22,28 +22,28 @@
 
 <script lang="ts" setup>
 import {ref, onMounted} from "vue";
-import PokerService from "@/services/PokerService";
-import type {ActiveGameResponse} from "@/types/ActiveGameResponse";
+import pokerService from "@/services/PokerService";
+import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 
-const games = ref<ActiveGameResponse[]>([]);
+const games = ref<ActiveGameFullResponse[]>([]);
 const headers = [
   {
     title: 'Start date',
     key: 'startDate',
-    value: (item: ActiveGameResponse) => new Date(item.startDate).toLocaleString()
+    value: (item: ActiveGameFullResponse) => new Date(item.startDate).toLocaleString()
   },
 ];
 
 onMounted(async () => {
   try {
-    games.value = await PokerService.getAllActiveGames();
+    games.value = await pokerService.getAllActiveGames();
   } catch (error) {
     console.error("Error when fetch games:", error);
   }
 });
 
 const isModalOpen = ref<boolean>(false);
-const selectedRow = ref<ActiveGameResponse | null>(null);
+const selectedRow = ref<ActiveGameFullResponse | null>(null);
 
 const onRowDblClick = (row: any) => {
   selectedRow.value = row;

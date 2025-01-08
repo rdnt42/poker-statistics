@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import {ref, onMounted} from "vue";
 import type {PlayerResponse} from "@/types/PlayerResponse";
-import PokerService from "@/services/PokerService";
+import pokerService from "@/services/PokerService";
 
 const players = ref<PlayerResponse[]>([]);
 const headers = [
@@ -23,7 +23,7 @@ const headers = [
 
 onMounted(async () => {
   try {
-    players.value = await PokerService.getAllPlayers();
+    players.value = await pokerService.getAllPlayers();
   } catch (error) {
     console.error("Error when fetch games:", error);
   }

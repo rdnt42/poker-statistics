@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import {ref, onMounted} from "vue";
-import PokerService from "@/services/PokerService";
+import pokerService from "@/services/PokerService";
 import type {HistoricalGameResponse} from "@/types/HistoricalGameResponse";
 
 
@@ -27,7 +27,7 @@ const headers = [
 
 onMounted(async () => {
   try {
-    games.value = await PokerService.getHistoricalGames();
+    games.value = await pokerService.getHistoricalGames();
   } catch (error) {
     console.error("Error when fetch games:", error);
   }
