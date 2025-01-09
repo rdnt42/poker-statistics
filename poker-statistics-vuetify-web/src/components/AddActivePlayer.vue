@@ -16,6 +16,7 @@
         type="number"
         :disabled="isInProcessing"
         :min="0"
+        :default="10"
         required
       ></v-text-field>
       <v-text-field
@@ -63,7 +64,7 @@ const emit = defineEmits(['data-updated']);
 
 const players = ref<PlayerData[]>([]);
 const selectedPlayer = ref<PlayerData>(nullPlayer);
-const cashIn = ref<number>(0);
+const cashIn = ref<number>(10);
 const playerName = ref<string | null>(null);
 const playerNickname = ref<string | null>(null);
 const loading = ref<boolean>(false);
