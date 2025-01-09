@@ -52,10 +52,20 @@
 import {ref, onMounted, type PropType} from 'vue';
 import pokerService from "@/services/PokerService";
 
-type PlayerData = { id: string | null, name: string | null, nickname: string | null };
-type GameData = { id: string, startDate: Date };
+type PlayerData = {
+  id: string | null,
+  name: string | null,
+  nickname: string | null
+};
+type GameData = {
+  id: string,
+  startDate: Date
+};
+
 const nullPlayer = {
-  id: null, name: '-- Create new player --', nickname: null
+  id: null,
+  name: '-- Create new player --',
+  nickname: null,
 }
 const props = defineProps({
   game: Object as PropType<GameData | null>,

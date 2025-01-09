@@ -44,23 +44,15 @@
               <td>{{ item.cashOut }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <v-icon
-                  color="red"
-                  class="cursor-pointer"
-                  @click="openFinishGameForPlayerModal(item)"
-                >
-                  mdi-close-circle
-                </v-icon>
+                <FinishGameForPlayerModal
+                  :player="convertToFinishingPlayer(item)"
+                />
               </td>
             </tr>
             </tbody>
           </v-table>
         </div>
       </v-card-text>
-      <FinishGameForPlayerModal
-        :isOpen="isFinishGameModalOpen"
-        @update:isOpen="isFinishGameModalOpen = $event"
-      />
       <v-card-actions>
         <v-btn color="primary" text="cls" @click="closeModal">Close</v-btn>
       </v-card-actions>
@@ -86,9 +78,6 @@ const loading = ref(false);
 const error = ref(null);
 const activeGame = ref<ActiveGameFullResponse | null>(null);
 const players = ref<PlayerInGameResponse[] | null>(null);
-
-const isFinishGameModalOpen = ref<boolean>(false);
-const selectedPlayerForFinish = ref<PlayerInGameResponse | null>(null);
 
 const localIsOpen = ref(props.isOpen);
 
@@ -127,8 +116,11 @@ const handleAddActivePlayerEvent = () => {
   }
 };
 
-const openFinishGameForPlayerModal = (player: PlayerInGameResponse) => {
-  selectedPlayerForFinish.value = player;
-  isFinishGameModalOpen.value = true;
-};
+const convertToFinishingPlayer = (player: PlayerInGameResponse) => ({
+  id: player.id,
+  name: player.name,
+  nickname: player.nickname,
+  cashIn: player.cashIn,
+  cashOut: player.cashOut,
+});
 </script>
