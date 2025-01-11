@@ -2,6 +2,7 @@ package org.marowak.pokerstatisticsback.service
 
 import jakarta.transaction.Transactional
 import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
+import org.marowak.pokerstatisticsback.dto.request.FinishGameForPlayerDto
 import org.marowak.pokerstatisticsback.dto.response.*
 import org.marowak.pokerstatisticsback.entity.ActiveGame
 import org.marowak.pokerstatisticsback.repository.ActiveGameRepository
@@ -41,18 +42,24 @@ class ActiveGameService(
     }
 
     @Transactional
-    fun addExistedPlayerToGame(id: UUID, request: AddExistedPlayerToGameDto): ActiveGameFullDto {
-        val (playerId, cashIn) = request
-        val game = activeGameRepository.findById(id).orElseThrow()
+    fun addExistedPlayerToGame(gameId: UUID, playerId: UUID, request: AddExistedPlayerToGameDto) {
+        val (cashIn) = request
+        val game = activeGameRepository.findById(gameId).orElseThrow()
         playerInGameService.findByPlayerIdOrNull(playerId)?.let {
             throw IllegalStateException("Player ${it.id} already have active game")
         }
 
         playerInGameService.create(playerId, game.id, cashIn)
+    }
 
-        return activeGameRepository
-            .findById(id)
-            .orElseThrow()
-            .toFullDto()
+    @Transactional
+    fun finishGameForPlayer(gameId: UUID, playerId: UUID, request: FinishGameForPlayerDto) {
+        val (cashOut) = request
+        val player = playerInGameService.findByPlayerId(playerId)
+        check(player.activeGameId == gameId) {
+            "Player $playerId already have another active game"
+        }
+
+        playerInGameService.finishGame(playerId, cashOut)
     }
 }

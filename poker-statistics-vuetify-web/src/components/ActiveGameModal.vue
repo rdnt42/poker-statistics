@@ -8,7 +8,7 @@
         <div v-else>
           <AddActivePlayer
             :game="selectedRow ? {id: selectedRow.id, startDate: selectedRow.startDate} : null"
-            @data-updated="handleAddActivePlayerEvent"
+            @data-updated="handleDataChanged"
           />
           <v-table>
             <thead>
@@ -44,9 +44,13 @@
               <td>{{ item.cashOut }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <FinishGameForPlayerModal
-                  :player="convertToFinishingPlayer(item)"
-                />
+                <div v-if="isPlayerActive(item)">
+                  <FinishGameForPlayerModal
+                    :player="convertToFinishingPlayer(item)"
+                    :game-id="activeGame!.id"
+                    @data-updated="handleDataChanged"
+                  />
+                </div>
               </td>
             </tr>
             </tbody>
@@ -66,6 +70,7 @@ import pokerService from "@/services/PokerService";
 import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {PlayerInGameResponse} from "@/types/PlayerInGameResponse";
 import AddActivePlayer from "@/components/AddActivePlayer.vue";
+import {PlayerInGameStatus} from "@/types/types";
 
 const props = defineProps({
   isOpen: Boolean,
@@ -88,17 +93,20 @@ watch(() => props.isOpen, (newVal) => {
 watch(localIsOpen, (newVal) => {
   emit('update:isOpen', newVal);
   if (newVal && props.selectedRow) {
-    fetchAdditionalData(props.selectedRow.id);
+    fetchActiveGameFullInfo(props.selectedRow.id);
   }
 });
 
-const fetchAdditionalData = async (id: string) => {
+const fetchActiveGameFullInfo = async (id: string) => {
   loading.value = true;
   error.value = null;
   activeGame.value = null;
   try {
     activeGame.value = await pokerService.getActiveGameFullInfo(id);
-    players.value = activeGame.value.players;
+    players.value = activeGame.value.players.sort((a, b) =>
+      Number(a.status === PlayerInGameStatus.Finished) - Number(b.status === PlayerInGameStatus.Finished) ||
+      a.name.localeCompare(b.name)
+    );
   } catch (err: any) {
     error.value = err.message;
   } finally {
@@ -110,9 +118,9 @@ const closeModal = () => {
   localIsOpen.value = false;
 };
 
-const handleAddActivePlayerEvent = () => {
+const handleDataChanged = () => {
   if (props.selectedRow) {
-    fetchAdditionalData(props.selectedRow.id);
+    fetchActiveGameFullInfo(props.selectedRow.id);
   }
 };
 
@@ -123,4 +131,6 @@ const convertToFinishingPlayer = (player: PlayerInGameResponse) => ({
   cashIn: player.cashIn,
   cashOut: player.cashOut,
 });
+
+const isPlayerActive = (player: PlayerInGameResponse) => player.status !== PlayerInGameStatus.Finished;
 </script>

@@ -9,7 +9,7 @@ import java.util.*
 
 @Table(name = "players_in_game")
 @Entity
-class PlayerInGame(
+data class PlayerInGame(
     @Id
     val id: UUID,
 

@@ -1,5 +1,6 @@
 package org.marowak.pokerstatisticsback.service
 
+import jakarta.transaction.Transactional
 import org.marowak.pokerstatisticsback.entity.PlayerInGame
 import org.marowak.pokerstatisticsback.entity.type.PlayerStatusType
 import org.marowak.pokerstatisticsback.repository.PlayerInGameRepository
@@ -11,6 +12,7 @@ import kotlin.jvm.optionals.getOrNull
 class PlayerInGameService(
     private val playerInGameRepository: PlayerInGameRepository
 ) {
+    @Transactional
     fun create(playerId: UUID, activeGameId: UUID, cashIn: Int): PlayerInGame {
         val player = PlayerInGame(
             id = playerId,
@@ -24,5 +26,21 @@ class PlayerInGameService(
 
     fun findByPlayerIdOrNull(id: UUID): PlayerInGame? {
         return playerInGameRepository.findById(id).getOrNull()
+    }
+
+    fun findByPlayerId(id: UUID): PlayerInGame {
+        return playerInGameRepository.findById(id).orElseThrow()
+    }
+
+    @Transactional
+    fun finishGame(playerId: UUID, cashOut: Int): PlayerInGame {
+        val player = playerInGameRepository.findById(playerId)
+            .orElseThrow()
+            .copy(
+                status = PlayerStatusType.FINISHED,
+                cashOut = cashOut,
+            )
+
+        return playerInGameRepository.save(player)
     }
 }

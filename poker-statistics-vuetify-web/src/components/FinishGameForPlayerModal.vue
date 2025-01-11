@@ -1,55 +1,3 @@
-<!--<template>-->
-<!--  <v-dialog>-->
-<!--    <v-card>-->
-<!--      <v-card-title>-->
-<!--        End Game for Player-->
-<!--      </v-card-title>-->
-<!--      <v-card-text>-->
-<!--        <p><strong>Name:</strong> {{ player.name }}</p>-->
-<!--        <p><strong>Nickname:</strong> {{ player.nickname }}</p>-->
-<!--        <p><strong>Cash IN:</strong> {{ player.cashIn }}</p>-->
-<!--        <p><strong>Cash OUT:</strong> {{ player.cashOut }}</p>-->
-<!--        <p><strong>Status:</strong> {{ player.status }}</p>-->
-<!--      </v-card-text>-->
-<!--      <v-card-actions>-->
-<!--        <v-btn color="primary" @click="confirm">OK</v-btn>-->
-<!--        <v-btn @click="close">Cancel</v-btn>-->
-<!--      </v-card-actions>-->
-<!--    </v-card>-->
-<!--  </v-dialog>-->
-<!--</template>-->
-
-<!--<script lang="ts" setup>-->
-<!--import { defineProps, defineEmits } from 'vue';-->
-
-<!--const props = defineProps({-->
-<!--  isOpen: Boolean,-->
-<!--  player: {-->
-<!--    type: Object,-->
-<!--    required: true,-->
-<!--    default: () => ({-->
-<!--      name: '',-->
-<!--      nickname: '',-->
-<!--      cashIn: 0,-->
-<!--      cashOut: 0,-->
-<!--      status: '',-->
-<!--    }),-->
-<!--  },-->
-<!--});-->
-
-<!--const emit = defineEmits(['update:isOpen', 'confirm']);-->
-
-<!--const close = () => {-->
-<!--  emit('update:isOpen', false);-->
-<!--};-->
-
-<!--const confirm = () => {-->
-<!--  emit('confirm', props.player);-->
-<!--  close();-->
-<!--};-->
-<!--</script>-->
-
-
 <template>
   <div>
     <v-dialog
@@ -76,21 +24,38 @@
             <v-col cols="12" md="4" sm="6">
               <v-text-field
                 label="Name"
-                required
-              > {{props.player?.name}}</v-text-field>
+                disabled
+                :model-value="player.name"
+              />
             </v-col>
-
-            <v-col
-              cols="12"
-              md="4"
-              sm="6"
-            >
+            <v-col cols="12" md="4" sm="6">
               <v-text-field
-                hint="example of helper text only on focus"
-                label="Middle name"
-              ></v-text-field>
+                label="Nickname"
+                disabled
+                :model-value="player.nickname"
+              />
             </v-col>
-
+          </v-row>
+          <v-row dense>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                label="Cash IN"
+                disabled
+                type="number"
+                :min="0"
+                :model-value="player.cashIn"
+              />
+            </v-col>
+            <v-col cols="12" md="4" sm="6">
+              <v-text-field
+                label="Cash OUT"
+                required
+                :rules="[requiredRule]"
+                type="number"
+                :min="0"
+                v-model="editableValues.cashOut"
+              />
+            </v-col>
           </v-row>
 
         </v-card-text>
@@ -110,7 +75,7 @@
             color="primary"
             text="End game for player"
             variant="tonal"
-            @click="dialog = false"
+            @click="closeModal"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -119,8 +84,9 @@
 </template>
 
 <script lang="ts" setup>
-import {shallowRef, watch} from 'vue'
-import type {PropType} from "vue";
+import {shallowRef} from 'vue'
+import {requiredRule} from "@/components/utils";
+import pokerService from "@/services/PokerService";
 
 type PlayerForFinishingGame = {
   id: string,
@@ -129,15 +95,24 @@ type PlayerForFinishingGame = {
   cashIn: number,
   cashOut: number | undefined,
 };
-const props = defineProps({
-  player: Object as PropType<PlayerForFinishingGame>,
+const props = defineProps<{
+  player: PlayerForFinishingGame,
+  gameId: string,
+}>();
+
+const editableValues = ref({
+  cashOut: props.player.cashOut || 0,
 });
+const emit = defineEmits(['data-updated']);
 
 const dialog = shallowRef(false)
 
-watch(dialog, () => {
-  console.log(props.player);
-});
+const closeModal = async () => {
+  dialog.value = false;
+  await pokerService.finishGameForPlayer(props.gameId, props.player.id, editableValues.value.cashOut);
+  emit('data-updated');
+};
+
 </script>
 
 
