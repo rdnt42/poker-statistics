@@ -5,9 +5,9 @@
       <v-card-text>
         <p v-if="loading">Loading...</p>
         <p v-else-if="error">Error: {{ error }}</p>
-        <div v-else>
+        <div v-else-if="activeGame !== null">
           <AddActivePlayer
-            :game="selectedRow ? {id: selectedRow.id, startDate: selectedRow.startDate} : null"
+            :game="convertToShortGameInfo(activeGame)"
             @data-updated="handleDataChanged"
           />
           <v-table>
@@ -47,7 +47,7 @@
                 <div v-if="isPlayerActive(item)">
                   <FinishGameForPlayerModal
                     :player="convertToFinishingPlayer(item)"
-                    :game-id="activeGame!.id"
+                    :game-id="activeGame.id"
                     @data-updated="handleDataChanged"
                   />
                 </div>
@@ -65,17 +65,17 @@
 </template>
 
 <script lang="ts" setup>
-import {type PropType, ref, watch} from 'vue';
+import {ref, watch} from 'vue';
 import pokerService from "@/services/PokerService";
 import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {PlayerInGameResponse} from "@/types/PlayerInGameResponse";
 import AddActivePlayer from "@/components/AddActivePlayer.vue";
 import {PlayerInGameStatus} from "@/types/types";
 
-const props = defineProps({
-  isOpen: Boolean,
-  selectedRow: Object as PropType<ActiveGameFullResponse | null>,
-});
+const props = defineProps<{
+  isOpen: boolean;
+  selectedRow: ActiveGameFullResponse | null;
+}>();
 
 const emit = defineEmits(['update:isOpen']);
 
@@ -130,6 +130,12 @@ const convertToFinishingPlayer = (player: PlayerInGameResponse) => ({
   nickname: player.nickname,
   cashIn: player.cashIn,
   cashOut: player.cashOut,
+});
+
+const convertToShortGameInfo = (game: ActiveGameFullResponse) => ({
+  id: game.id,
+  startDate: game.startDate,
+  playersInGameIds: game.players.map((p) => p.id),
 });
 
 const isPlayerActive = (player: PlayerInGameResponse) => player.status !== PlayerInGameStatus.Finished;
