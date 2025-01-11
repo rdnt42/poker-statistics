@@ -2,36 +2,40 @@
   <v-form @submit.prevent="submitForm">
     <div class="d-flex align-center">
       <v-select
-        v-model="selectedPlayer"
+        v-model="playerValues"
         :item-props="itemProps"
         :items="players"
         label="Player"
         :disabled="isInProcessing"
         @update:modelValue="handlePlayerChange"
         required
+        :rules="[requiredRule]"
       ></v-select>
       <v-text-field
-        v-model="cashIn"
+        v-model="playerValues.cashIn"
         label="Cash IN"
         type="number"
         :disabled="isInProcessing"
         :min="0"
-        :default="10"
+        :default="defaultCashIn"
         required
+        :rules="[requiredRule]"
       ></v-text-field>
       <v-text-field
-        v-model="playerName"
+        v-model="playerValues.name"
         :label="isAddExistedPlayer ? 'Player name' : 'Fill name'"
         type="string"
         :disabled="isInProcessing || isAddExistedPlayer"
         required
+        :rules="[requiredRule]"
       ></v-text-field>
       <v-text-field
-        v-model="playerNickname"
+        v-model="playerValues.nickname"
         :label="isAddExistedPlayer ? 'Player nickname' : 'Fill nickname'"
         type="string"
         :disabled="isInProcessing || isAddExistedPlayer"
         required
+        :rules="[requiredRule]"
       ></v-text-field>
       <v-btn
         type="submit"
@@ -49,13 +53,20 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted, type PropType} from 'vue';
+import {ref, onMounted} from 'vue';
 import pokerService from "@/services/PokerService";
+import {requiredRule} from "@/components/utils";
 
-type PlayerData = {
+type ExistedPlayer = {
   id: string | null,
   name: string | null,
   nickname: string | null
+};
+type AddingPlayer = {
+  id: null | string,
+  name: null | string,
+  nickname: null | string,
+  cashIn: number,
 };
 type GameData = {
   id: string,
@@ -67,19 +78,22 @@ const nullPlayer = {
   name: '-- Create new player --',
   nickname: null,
 }
-const props = defineProps({
-  game: Object as PropType<GameData | null>,
-});
+const props = defineProps<{
+  game: GameData,
+}>();
 const emit = defineEmits(['data-updated']);
 
-const players = ref<PlayerData[]>([]);
-const selectedPlayer = ref<PlayerData>(nullPlayer);
-const cashIn = ref<number>(10);
-const playerName = ref<string | null>(null);
-const playerNickname = ref<string | null>(null);
+const players = ref<ExistedPlayer[]>([]);
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const submitting = ref<boolean>(false);
+const defaultCashIn = 10;
+const playerValues = ref<AddingPlayer>({
+  id: null,
+  name: null,
+  nickname: null,
+  cashIn: defaultCashIn,
+});
 
 const fetchGame = async () => {
   loading.value = true;
@@ -107,13 +121,12 @@ const submitForm = async () => {
   submitting.value = true;
 
   try {
-    if (selectedPlayer.value.id === null) {
+    if (playerValues.value.id === null) {
 
     } else {
-      await pokerService.addExistedPlayerToGame(props.game.id, selectedPlayer.value.id, cashIn.value);
+      await pokerService.addExistedPlayerToGame(props.game.id, playerValues.value.id, playerValues.value.cashIn);
     }
     emit('data-updated');
-    console.log('send update')
     resetForm();
   } catch (err: any) {
     alert(`Failed to add player: ${err.message}`);
@@ -122,35 +135,36 @@ const submitForm = async () => {
   }
 };
 
-const itemProps = (item: PlayerData) => {
+const itemProps = (item: ExistedPlayer) => {
   return {
     title: item.name,
     subtitle: item.nickname,
   }
 };
 
-const handlePlayerChange = (value: PlayerData) => {
+const handlePlayerChange = (value: ExistedPlayer) => {
   if (value.id === null) {
     resetForm();
   } else {
-    playerName.value = value.name;
-    playerNickname.value = value.nickname;
+    playerValues.value.name = value.name;
+    playerValues.value.nickname = value.nickname;
   }
 };
 
 const resetForm = () => {
-  selectedPlayer.value = nullPlayer;
-  cashIn.value = 0;
-  playerName.value = null;
-  playerNickname.value = null;
+  playerValues.value.cashIn = defaultCashIn;
+  playerValues.value.name = null;
+  playerValues.value.nickname = null;
 };
 
 const isPlayerNeedCreate = computed((): boolean => {
-  return selectedPlayer.value.id === null && playerName.value !== null && playerNickname.value !== null;
+  return playerValues.value.id === null &&
+    playerValues.value.name !== null &&
+    playerValues.value.nickname !== null;
 });
 
 const isAddExistedPlayer = computed((): boolean => {
-  return selectedPlayer.value.id !== null;
+  return playerValues.value.id !== null;
 });
 
 const isInProcessing = computed((): boolean => {
