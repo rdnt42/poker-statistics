@@ -2,6 +2,7 @@ package org.marowak.pokerstatisticsback.controller
 
 import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
 import org.marowak.pokerstatisticsback.dto.request.FinishGameForPlayerDto
+import org.marowak.pokerstatisticsback.dto.request.ReturnPlayerIntoGameDto
 import org.marowak.pokerstatisticsback.service.ActiveGameService
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -28,5 +29,14 @@ class PlayerInGameController(
         @RequestBody request: FinishGameForPlayerDto
     ) {
         activeGameService.finishGameForPlayer(gameId, playerId, request)
+    }
+
+    @PostMapping("/{playerId}/return")
+    fun returnPlayerIntoGame(
+        @PathVariable gameId: UUID,
+        @PathVariable playerId: UUID,
+        @RequestBody request: ReturnPlayerIntoGameDto
+    ) {
+        activeGameService.returnPlayerIntoGame(gameId, playerId, request)
     }
 }

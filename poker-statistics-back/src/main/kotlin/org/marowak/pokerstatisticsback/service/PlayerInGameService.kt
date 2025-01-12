@@ -43,4 +43,16 @@ class PlayerInGameService(
 
         return playerInGameRepository.save(player)
     }
+
+    @Transactional
+    fun returnIntoGame(playerId: UUID, cashIn: Int): PlayerInGame {
+        val player = playerInGameRepository.findById(playerId)
+            .orElseThrow()
+            .copy(
+                status = PlayerStatusType.ACTIVE,
+                cashIn = cashIn,
+            )
+
+        return playerInGameRepository.save(player)
+    }
 }

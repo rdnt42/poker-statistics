@@ -14,6 +14,7 @@ declare module 'vue' {
     FinishGameForPlayerModal: typeof import('./components/FinishGameForPlayerModal.vue')['default']
     HistoricalGames: typeof import('./components/HistoricalGames.vue')['default']
     Players: typeof import('./components/Players.vue')['default']
+    ReturnPlayerIntoGameModal: typeof import('./components/ReturnPlayerIntoGameModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tabs: typeof import('./components/Tabs.vue')['default']

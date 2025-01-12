@@ -46,7 +46,14 @@
               <td>
                 <div v-if="isPlayerActive(item)">
                   <FinishGameForPlayerModal
-                    :player="convertToFinishingPlayer(item)"
+                    :player="convertToFinishPlayer(item)"
+                    :game-id="activeGame.id"
+                    @data-updated="handleDataChanged"
+                  />
+                </div>
+                <div v-if="!isPlayerActive(item)">
+                  <ReturnPlayerIntoGameModal
+                    :player="convertToReturnPlayer(item)"
                     :game-id="activeGame.id"
                     @data-updated="handleDataChanged"
                   />
@@ -124,12 +131,20 @@ const handleDataChanged = () => {
   }
 };
 
-const convertToFinishingPlayer = (player: PlayerInGameResponse) => ({
+const convertToFinishPlayer = (player: PlayerInGameResponse) => ({
   id: player.id,
   name: player.name,
   nickname: player.nickname,
   cashIn: player.cashIn,
   cashOut: player.cashOut,
+});
+
+const convertToReturnPlayer = (player: PlayerInGameResponse) => ({
+  id: player.id,
+  name: player.name,
+  nickname: player.nickname,
+  cashIn: player.cashIn,
+  cashOut: player.cashOut || 0,
 });
 
 const convertToShortGameInfo = (game: ActiveGameFullResponse) => ({

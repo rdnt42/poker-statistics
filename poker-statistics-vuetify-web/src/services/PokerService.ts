@@ -3,8 +3,8 @@ import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {HistoricalGameResponse} from "@/types/HistoricalGameResponse";
 import type {PlayerResponse} from "@/types/PlayerResponse";
 import type {AddExistedPlayerToGameRequest} from "@/types/AddExistedPlayerToGameRequest";
-import type {ActiveGameResponse} from "@/types/ActiveGameResponse";
 import type {FinishGameForPlayerRequest} from "@/types/FinishGameForPlayerRequest";
+import type {ReturnPlayerIntoGameRequest} from "@/types/ReturnPlayerIntoGameRequest";
 
 class PokerService {
   async getAllActiveGames(): Promise<ActiveGameFullResponse[]> {
@@ -46,9 +46,18 @@ class PokerService {
   ): Promise<void> {
     const request: FinishGameForPlayerRequest = {cashOut};
     const url = `/api/v1/active-games/${activeGameId}/players-in-game/${playerId}/finish`;
-    const response = await pokerClient.post(url, request);
+    await pokerClient.post(url, request);
+  }
 
-    return response.data;
+  async returnPlayerIntoGame(
+    activeGameId: string,
+    playerId: string,
+    cashIn: number,
+  ): Promise<void> {
+    const request: ReturnPlayerIntoGameRequest = {cashIn};
+    console.log(request);
+    const url = `/api/v1/active-games/${activeGameId}/players-in-game/${playerId}/return`;
+    await pokerClient.post(url, request);
   }
 
 }

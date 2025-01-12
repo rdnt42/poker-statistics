@@ -9,16 +9,16 @@
           <template v-slot:activator="{ props: tooltipActivatorProps }">
             <span v-bind="tooltipActivatorProps">
               <v-icon
-                color="red"
+                color="green"
                 class="cursor-pointer"
                 variant="tonal"
                 v-bind="activatorProps"
               >
-                mdi-close-circle
+                mdi-restart
               </v-icon>
             </span>
           </template>
-          <span>End game for player</span>
+          <span>Return player into game</span>
         </v-tooltip>
       </template>
 
@@ -47,18 +47,18 @@
             <v-col cols="12" md="4" sm="6">
               <v-text-field
                 label="Cash IN"
-                disabled
+                :rules="[requiredRule]"
                 type="number"
-                :model-value="player.cashIn"
+                :min="player.cashIn"
+                v-model="editableValues.cashIn"
               />
             </v-col>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
                 label="Cash OUT"
-                :rules="[requiredRule]"
+                disabled
                 type="number"
-                :min="0"
-                v-model="editableValues.cashOut"
+                :model-value="player.cashOut"
               />
             </v-col>
           </v-row>
@@ -77,7 +77,7 @@
 
           <v-btn
             color="primary"
-            text="End game for player"
+            text="Return player into game"
             variant="tonal"
             @click="closeModal"
           ></v-btn>
@@ -92,20 +92,20 @@ import {shallowRef} from 'vue'
 import {requiredRule} from "@/components/utils";
 import pokerService from "@/services/PokerService";
 
-type PlayerForComplete = {
+type PlayerForReturn = {
   id: string,
   name: string,
   nickname: string,
   cashIn: number,
-  cashOut: number | undefined,
+  cashOut: number,
 };
 const props = defineProps<{
-  player: PlayerForComplete,
+  player: PlayerForReturn,
   gameId: string,
 }>();
 
 const editableValues = ref({
-  cashOut: props.player.cashOut || 0,
+  cashIn: props.player.cashIn,
 });
 const emit = defineEmits(['data-updated']);
 
@@ -113,7 +113,7 @@ const dialog = shallowRef(false)
 
 const closeModal = async () => {
   dialog.value = false;
-  await pokerService.finishGameForPlayer(props.gameId, props.player.id, editableValues.value.cashOut);
+  await pokerService.returnPlayerIntoGame(props.gameId, props.player.id, editableValues.value.cashIn);
   emit('data-updated');
 };
 
