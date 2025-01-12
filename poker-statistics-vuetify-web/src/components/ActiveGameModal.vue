@@ -44,19 +44,28 @@
               <td>{{ item.cashOut }}</td>
               <td>{{ item.status }}</td>
               <td>
-                <div v-if="isPlayerActive(item)">
-                  <FinishGameForPlayerModal
-                    :player="convertToFinishPlayer(item)"
-                    :game-id="activeGame.id"
-                    @data-updated="handleDataChanged"
-                  />
-                </div>
-                <div v-if="!isPlayerActive(item)">
-                  <ReturnPlayerIntoGameModal
-                    :player="convertToReturnPlayer(item)"
-                    :game-id="activeGame.id"
-                    @data-updated="handleDataChanged"
-                  />
+                <div class="d-flex align-center justify-start">
+                  <div v-if="isPlayerActive(item)" class="mr-2">
+                    <FinishGameForPlayerModal
+                      :player="convertToFinishPlayer(item)"
+                      :game-id="activeGame.id"
+                      @data-updated="handleDataChanged"
+                    />
+                  </div>
+                  <div v-if="!isPlayerActive(item)" class="mr-2">
+                    <ReturnPlayerIntoGameModal
+                      :player="convertToReturnPlayer(item)"
+                      :game-id="activeGame.id"
+                      @data-updated="handleDataChanged"
+                    />
+                  </div>
+                  <div class="mr-2">
+                    <EditPlayerInGame
+                      :player="convertToFinishPlayer(item)"
+                      :game-id="activeGame.id"
+                      @data-updated="handleDataChanged"
+                    />
+                  </div>
                 </div>
               </td>
             </tr>
@@ -136,7 +145,7 @@ const convertToFinishPlayer = (player: PlayerInGameResponse) => ({
   name: player.name,
   nickname: player.nickname,
   cashIn: player.cashIn,
-  cashOut: player.cashOut,
+  cashOut: player.cashOut ?? null,
 });
 
 const convertToReturnPlayer = (player: PlayerInGameResponse) => ({

@@ -1,6 +1,7 @@
 package org.marowak.pokerstatisticsback.service
 
 import jakarta.transaction.Transactional
+import org.marowak.pokerstatisticsback.dto.request.PatchPlayerInGameDto
 import org.marowak.pokerstatisticsback.entity.PlayerInGame
 import org.marowak.pokerstatisticsback.entity.type.PlayerStatusType
 import org.marowak.pokerstatisticsback.repository.PlayerInGameRepository
@@ -54,5 +55,18 @@ class PlayerInGameService(
             )
 
         return playerInGameRepository.save(player)
+    }
+
+    @Transactional
+    fun patch(playerId: UUID, request: PatchPlayerInGameDto): PlayerInGame {
+        val player = playerInGameRepository.findById(playerId)
+            .orElseThrow()
+        val updatedPlayer = player.copy(
+            status = PlayerStatusType.ACTIVE,
+            cashIn = request.cashIn ?: player.cashIn,
+            cashOut = request.cashOut ?: player.cashOut,
+        )
+
+        return playerInGameRepository.save(updatedPlayer)
     }
 }

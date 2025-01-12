@@ -3,6 +3,7 @@ package org.marowak.pokerstatisticsback.service
 import jakarta.transaction.Transactional
 import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
 import org.marowak.pokerstatisticsback.dto.request.FinishGameForPlayerDto
+import org.marowak.pokerstatisticsback.dto.request.PatchPlayerInGameDto
 import org.marowak.pokerstatisticsback.dto.request.ReturnPlayerIntoGameDto
 import org.marowak.pokerstatisticsback.dto.response.*
 import org.marowak.pokerstatisticsback.entity.ActiveGame
@@ -76,5 +77,15 @@ class ActiveGameService(
         }
 
         playerInGameService.returnIntoGame(playerId, cashIn)
+    }
+
+    @Transactional
+    fun patchPlayer(gameId: UUID, playerId: UUID, request: PatchPlayerInGameDto) {
+        val player = playerInGameService.findByPlayerId(playerId)
+        check(player.activeGameId == gameId) {
+            "Player $playerId already have another active game"
+        }
+
+        playerInGameService.patch(playerId, request)
     }
 }

@@ -2,6 +2,7 @@ package org.marowak.pokerstatisticsback.controller
 
 import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
 import org.marowak.pokerstatisticsback.dto.request.FinishGameForPlayerDto
+import org.marowak.pokerstatisticsback.dto.request.PatchPlayerInGameDto
 import org.marowak.pokerstatisticsback.dto.request.ReturnPlayerIntoGameDto
 import org.marowak.pokerstatisticsback.service.ActiveGameService
 import org.springframework.web.bind.annotation.*
@@ -38,5 +39,14 @@ class PlayerInGameController(
         @RequestBody request: ReturnPlayerIntoGameDto
     ) {
         activeGameService.returnPlayerIntoGame(gameId, playerId, request)
+    }
+
+    @PatchMapping("/{playerId}")
+    fun patchPlayer(
+        @PathVariable gameId: UUID,
+        @PathVariable playerId: UUID,
+        @RequestBody request: PatchPlayerInGameDto
+    ) {
+        activeGameService.patchPlayer(gameId, playerId, request)
     }
 }

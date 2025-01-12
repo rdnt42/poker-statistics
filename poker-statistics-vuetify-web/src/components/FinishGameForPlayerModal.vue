@@ -97,7 +97,7 @@ type PlayerForComplete = {
   name: string,
   nickname: string,
   cashIn: number,
-  cashOut: number | undefined,
+  cashOut: number | null,
 };
 const props = defineProps<{
   player: PlayerForComplete,
@@ -113,6 +113,7 @@ const dialog = shallowRef(false)
 
 const closeModal = async () => {
   dialog.value = false;
+  // TODO validate required
   await pokerService.finishGameForPlayer(props.gameId, props.player.id, editableValues.value.cashOut);
   emit('data-updated');
 };
