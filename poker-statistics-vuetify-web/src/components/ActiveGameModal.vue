@@ -10,67 +10,9 @@
             :game="convertToShortGameInfo(activeGame)"
             @data-updated="handleDataChanged"
           />
-          <v-table>
-            <thead>
-            <tr>
-              <th class="text-left" scope="col">
-                Name
-              </th>
-              <th class="text-left" scope="col">
-                Nickname
-              </th>
-              <th class="text-left" scope="col">
-                Cash IN
-              </th>
-              <th class="text-left" scope="col">
-                Cash OUT
-              </th>
-              <th class="text-left" scope="col">
-                Status
-              </th>
-              <th class="text-left" scope="col">
-                Actions
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
-              v-for="item in players"
-              :key="item.name"
-            >
-              <td>{{ item.name }}</td>
-              <td>{{ item.nickname }}</td>
-              <td>{{ item.cashIn }}</td>
-              <td>{{ item.cashOut }}</td>
-              <td>{{ item.status }}</td>
-              <td>
-                <div class="d-flex align-center justify-start">
-                  <div v-if="isPlayerActive(item)" class="mr-2">
-                    <FinishGameForPlayerModal
-                      :player="convertToFinishPlayer(item)"
-                      :game-id="activeGame.id"
-                      @data-updated="handleDataChanged"
-                    />
-                  </div>
-                  <div v-if="!isPlayerActive(item)" class="mr-2">
-                    <ReturnPlayerIntoGameModal
-                      :player="convertToReturnPlayer(item)"
-                      :game-id="activeGame.id"
-                      @data-updated="handleDataChanged"
-                    />
-                  </div>
-                  <div class="mr-2">
-                    <EditPlayerInGame
-                      :player="convertToFinishPlayer(item)"
-                      :game-id="activeGame.id"
-                      @data-updated="handleDataChanged"
-                    />
-                  </div>
-                </div>
-              </td>
-            </tr>
-            </tbody>
-          </v-table>
+          <div v-if="players !== null">
+            <PlayersInGame :players="players" :game="activeGame"/>
+          </div>
         </div>
       </v-card-text>
       <v-card-actions>
@@ -87,6 +29,7 @@ import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {PlayerInGameResponse} from "@/types/PlayerInGameResponse";
 import AddActivePlayer from "@/components/AddActivePlayer.vue";
 import {PlayerInGameStatus} from "@/types/types";
+import {useActiveGameStore} from "@/stores/app";
 
 const props = defineProps<{
   isOpen: boolean;
@@ -102,6 +45,14 @@ const players = ref<PlayerInGameResponse[] | null>(null);
 
 const localIsOpen = ref(props.isOpen);
 
+const activeGameStore = useActiveGameStore()
+
+watchEffect(() => {
+  if (props.selectedRow && activeGameStore.isDataUpdated) {
+    fetchActiveGameFullInfo(props.selectedRow.id);
+    activeGameStore.resetDataUpdated();
+  }
+})
 watch(() => props.isOpen, (newVal) => {
   localIsOpen.value = newVal;
 });
@@ -140,27 +91,10 @@ const handleDataChanged = () => {
   }
 };
 
-const convertToFinishPlayer = (player: PlayerInGameResponse) => ({
-  id: player.id,
-  name: player.name,
-  nickname: player.nickname,
-  cashIn: player.cashIn,
-  cashOut: player.cashOut ?? null,
-});
-
-const convertToReturnPlayer = (player: PlayerInGameResponse) => ({
-  id: player.id,
-  name: player.name,
-  nickname: player.nickname,
-  cashIn: player.cashIn,
-  cashOut: player.cashOut || 0,
-});
-
 const convertToShortGameInfo = (game: ActiveGameFullResponse) => ({
   id: game.id,
   startDate: game.startDate,
   playersInGameIds: game.players.map((p) => p.id),
 });
 
-const isPlayerActive = (player: PlayerInGameResponse) => player.status !== PlayerInGameStatus.Finished;
 </script>

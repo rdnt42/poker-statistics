@@ -56,7 +56,6 @@ class PokerService {
     cashIn: number,
   ): Promise<void> {
     const request: ReturnPlayerIntoGameRequest = {cashIn};
-    console.log(request);
     const url = `/api/v1/active-games/${activeGameId}/players-in-game/${playerId}/return`;
     await pokerClient.post(url, request);
   }
@@ -70,7 +69,6 @@ class PokerService {
     }
   ): Promise<void> {
     const request: PlayerInGameUpdateRequest = {...options};
-    console.log(request);
     const url = `/api/v1/active-games/${activeGameId}/players-in-game/${playerId}`;
     await pokerClient.patch(url, request);
   }

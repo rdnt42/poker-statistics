@@ -63,23 +63,19 @@
             </v-col>
           </v-row>
         </v-card-text>
-
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-spacer></v-spacer>
-
           <v-btn
             text="Close"
             variant="plain"
             @click="dialog = false"
           ></v-btn>
-
           <v-btn
             color="primary"
             text="End game for player"
             variant="tonal"
-            @click="closeModal"
+            @click="saveChanges"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -91,6 +87,7 @@
 import {shallowRef} from 'vue'
 import {requiredRule} from "@/components/utils";
 import pokerService from "@/services/PokerService";
+import {useActiveGameStore} from "@/stores/app";
 
 type PlayerForComplete = {
   id: string,
@@ -104,18 +101,19 @@ const props = defineProps<{
   gameId: string,
 }>();
 
+const activeGameStore = useActiveGameStore();
+
 const editableValues = ref({
   cashOut: props.player.cashOut || 0,
 });
-const emit = defineEmits(['data-updated']);
 
 const dialog = shallowRef(false)
 
-const closeModal = async () => {
+const saveChanges = async () => {
   dialog.value = false;
   // TODO validate required
   await pokerService.finishGameForPlayer(props.gameId, props.player.id, editableValues.value.cashOut);
-  emit('data-updated');
+  activeGameStore.notifyDataUpdated();
 };
 
 </script>

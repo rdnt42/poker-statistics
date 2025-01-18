@@ -79,7 +79,7 @@
             color="primary"
             text="Return player into game"
             variant="tonal"
-            @click="closeModal"
+            @click="saveChanges"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -91,6 +91,7 @@
 import {shallowRef} from 'vue'
 import {requiredRule} from "@/components/utils";
 import pokerService from "@/services/PokerService";
+import {useActiveGameStore} from "@/stores/app";
 
 type PlayerForReturn = {
   id: string,
@@ -107,14 +108,14 @@ const props = defineProps<{
 const editableValues = ref({
   cashIn: props.player.cashIn,
 });
-const emit = defineEmits(['data-updated']);
+const activeGameStore = useActiveGameStore();
 
 const dialog = shallowRef(false)
 
-const closeModal = async () => {
+const saveChanges = async () => {
   dialog.value = false;
   await pokerService.returnPlayerIntoGame(props.gameId, props.player.id, editableValues.value.cashIn);
-  emit('data-updated');
+  activeGameStore.notifyDataUpdated();
 };
 
 </script>

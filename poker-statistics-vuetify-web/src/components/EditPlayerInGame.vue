@@ -92,6 +92,7 @@
 import {shallowRef} from 'vue'
 import {requiredRule} from "@/components/utils";
 import pokerService from "@/services/PokerService";
+import {useActiveGameStore} from "@/stores/app";
 
 type PlayerInGame = {
   id: string,
@@ -109,7 +110,7 @@ const editableValues = ref({
   cashIn: props.player.cashIn,
   cashOut: props.player.cashOut,
 });
-const emit = defineEmits(['data-updated']);
+const activeGameStore = useActiveGameStore();
 
 const dialog = shallowRef(false)
 
@@ -119,7 +120,7 @@ const closeModal = async () => {
     cashIn: editableValues.value.cashIn,
     cashOut: editableValues.value.cashOut ?? undefined,
   });
-  emit('data-updated');
+  activeGameStore.notifyDataUpdated();
 };
 
 </script>

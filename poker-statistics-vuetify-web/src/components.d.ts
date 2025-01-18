@@ -7,6 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActiveGameDetail: typeof import('./components/ActiveGameDetail.vue')['default']
     ActiveGameModal: typeof import('./components/ActiveGameModal.vue')['default']
     ActiveGames: typeof import('./components/ActiveGames.vue')['default']
     AddActivePlayer: typeof import('./components/AddActivePlayer.vue')['default']
@@ -15,6 +16,7 @@ declare module 'vue' {
     FinishGameForPlayerModal: typeof import('./components/FinishGameForPlayerModal.vue')['default']
     HistoricalGames: typeof import('./components/HistoricalGames.vue')['default']
     Players: typeof import('./components/Players.vue')['default']
+    PlayersInGame: typeof import('./components/active-game/PlayersInGame.vue')['default']
     ReturnPlayerIntoGameModal: typeof import('./components/ReturnPlayerIntoGameModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
