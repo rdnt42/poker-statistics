@@ -50,6 +50,13 @@ class PokerService {
     await pokerClient.post(url, request);
   }
 
+  async finishGame(
+    activeGameId: string,
+  ): Promise<void> {
+    const url = `/api/v1/active-games/${activeGameId}/finish`;
+    await pokerClient.post(url);
+  }
+
   async returnPlayerIntoGame(
     activeGameId: string,
     playerId: string,

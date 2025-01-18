@@ -31,4 +31,9 @@ class ActiveGameController(
         return activeGameService.createNewGame()
     }
 
+    @PostMapping("/{id}/finish")
+    fun finishGame(@PathVariable id: UUID) {
+        activeGameService.finishGame(id)
+    }
+
 }

@@ -7,7 +7,7 @@ import java.util.*
 
 @Table(name = "players")
 @Entity
-class Player(
+data class Player(
     @Id
     val id: UUID,
 

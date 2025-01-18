@@ -16,6 +16,8 @@ import java.util.*
 class ActiveGameService(
     private val activeGameRepository: ActiveGameRepository,
     private val playerInGameService: PlayerInGameService,
+    private val playerService: PlayerService,
+    private val historicalGameService: HistoricalGameService,
 ) {
     fun getAll(): List<ActiveGameDto> {
         return activeGameRepository.findAll()
@@ -87,5 +89,13 @@ class ActiveGameService(
         }
 
         playerInGameService.patch(playerId, request)
+    }
+
+    @Transactional
+    fun finishGame(gameId: UUID) {
+        val game = activeGameRepository.findById(gameId).orElseThrow()
+        playerService.updatePlayersCash(game.activePlayers)
+        historicalGameService.create(game.activePlayers, game.startDate)
+        this.activeGameRepository.deleteById(gameId)
     }
 }

@@ -9,16 +9,16 @@
           <template v-slot:activator="{ props: tooltipActivatorProps }">
             <span v-bind="tooltipActivatorProps">
               <v-icon
-                color="blue"
+                color="green"
                 class="cursor-pointer"
                 variant="tonal"
                 v-bind="activatorProps"
               >
-                mdi-pencil
+                mdi-restart
               </v-icon>
             </span>
           </template>
-          <span>Edit player stats</span>
+          <span>Return player into game</span>
         </v-tooltip>
       </template>
 
@@ -30,6 +30,7 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Name"
                 disabled
                 :model-value="player.name"
@@ -37,6 +38,7 @@
             </v-col>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Nickname"
                 disabled
                 :model-value="player.nickname"
@@ -46,20 +48,21 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Cash IN"
                 :rules="[requiredRule]"
                 type="number"
-                :min="0"
+                :min="player.cashIn"
                 v-model="editableValues.cashIn"
               />
             </v-col>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Cash OUT"
-                :rules="[requiredRule]"
+                disabled
                 type="number"
-                :min="0"
-                v-model="editableValues.cashOut"
+                :model-value="player.cashOut"
               />
             </v-col>
           </v-row>
@@ -78,9 +81,9 @@
 
           <v-btn
             color="primary"
-            text="Save changes"
+            text="Return player into game"
             variant="tonal"
-            @click="closeModal"
+            @click="saveChanges"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -94,32 +97,28 @@ import {requiredRule} from "@/components/utils";
 import pokerService from "@/services/PokerService";
 import {useActiveGameStore} from "@/stores/app";
 
-type PlayerInGame = {
+type PlayerForReturn = {
   id: string,
   name: string,
   nickname: string,
   cashIn: number,
-  cashOut: number | null,
+  cashOut: number,
 };
 const props = defineProps<{
-  player: PlayerInGame,
+  player: PlayerForReturn,
   gameId: string,
 }>();
 
 const editableValues = ref({
   cashIn: props.player.cashIn,
-  cashOut: props.player.cashOut,
 });
 const activeGameStore = useActiveGameStore();
 
 const dialog = shallowRef(false)
 
-const closeModal = async () => {
+const saveChanges = async () => {
   dialog.value = false;
-  await pokerService.updateActivePlayer(props.gameId, props.player.id, {
-    cashIn: editableValues.value.cashIn,
-    cashOut: editableValues.value.cashOut ?? undefined,
-  });
+  await pokerService.returnPlayerIntoGame(props.gameId, props.player.id, editableValues.value.cashIn);
   activeGameStore.notifyDataUpdated();
 };
 

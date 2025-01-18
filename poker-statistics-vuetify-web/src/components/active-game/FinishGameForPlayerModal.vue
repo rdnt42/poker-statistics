@@ -30,6 +30,7 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Name"
                 disabled
                 :model-value="player.name"
@@ -37,6 +38,7 @@
             </v-col>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Nickname"
                 disabled
                 :model-value="player.nickname"
@@ -46,6 +48,7 @@
           <v-row dense>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Cash IN"
                 disabled
                 type="number"
@@ -54,6 +57,7 @@
             </v-col>
             <v-col cols="12" md="4" sm="6">
               <v-text-field
+                variant="outlined"
                 label="Cash OUT"
                 :rules="[requiredRule]"
                 type="number"

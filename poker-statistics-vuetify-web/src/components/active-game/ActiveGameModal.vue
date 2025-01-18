@@ -6,6 +6,7 @@
         <p v-if="loading">Loading...</p>
         <p v-else-if="error">Error: {{ error }}</p>
         <div v-else-if="activeGame !== null">
+          <ActiveGameDetails :game="activeGame"/>
           <AddActivePlayer
             :game="convertToShortGameInfo(activeGame)"
             @data-updated="handleDataChanged"
@@ -27,7 +28,7 @@ import {ref, watch} from 'vue';
 import pokerService from "@/services/PokerService";
 import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
 import type {PlayerInGameResponse} from "@/types/PlayerInGameResponse";
-import AddActivePlayer from "@/components/AddActivePlayer.vue";
+import AddActivePlayer from "@/components/active-game/AddActivePlayer.vue";
 import {PlayerInGameStatus} from "@/types/types";
 import {useActiveGameStore} from "@/stores/app";
 
@@ -47,12 +48,17 @@ const localIsOpen = ref(props.isOpen);
 
 const activeGameStore = useActiveGameStore()
 
+// TODO rework
 watchEffect(() => {
-  if (props.selectedRow && activeGameStore.isDataUpdated) {
+  if (activeGameStore.needToUpdate() && props.selectedRow) {
     fetchActiveGameFullInfo(props.selectedRow.id);
-    activeGameStore.resetDataUpdated();
   }
 })
+watchEffect(() => {
+  if (props.selectedRow) {
+    fetchActiveGameFullInfo(props.selectedRow.id);
+  }
+});
 watch(() => props.isOpen, (newVal) => {
   localIsOpen.value = newVal;
 });
@@ -74,8 +80,10 @@ const fetchActiveGameFullInfo = async (id: string) => {
       Number(a.status === PlayerInGameStatus.Finished) - Number(b.status === PlayerInGameStatus.Finished) ||
       a.name.localeCompare(b.name)
     );
+    activeGameStore.setActualData();
   } catch (err: any) {
     error.value = err.message;
+    activeGameStore.clearData();
   } finally {
     loading.value = false;
   }

@@ -14,6 +14,6 @@ class HistoricalGameController(
 
     @GetMapping
     fun getAll(): List<HistoricalGame> {
-        return historicalGameService.getHistoricalGames()
+        return historicalGameService.getAll()
     }
 }

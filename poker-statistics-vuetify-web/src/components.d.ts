@@ -7,17 +7,17 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ActiveGameDetail: typeof import('./components/ActiveGameDetail.vue')['default']
-    ActiveGameModal: typeof import('./components/ActiveGameModal.vue')['default']
-    ActiveGames: typeof import('./components/ActiveGames.vue')['default']
-    AddActivePlayer: typeof import('./components/AddActivePlayer.vue')['default']
+    ActiveGameDetails: typeof import('./components/active-game/ActiveGameDetails.vue')['default']
+    ActiveGameModal: typeof import('./components/active-game/ActiveGameModal.vue')['default']
+    ActiveGames: typeof import('./components/games/ActiveGames.vue')['default']
+    AddActivePlayer: typeof import('./components/active-game/AddActivePlayer.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     EditPlayerInGame: typeof import('./components/EditPlayerInGame.vue')['default']
     FinishGameForPlayerModal: typeof import('./components/FinishGameForPlayerModal.vue')['default']
     HistoricalGames: typeof import('./components/HistoricalGames.vue')['default']
     Players: typeof import('./components/Players.vue')['default']
     PlayersInGame: typeof import('./components/active-game/PlayersInGame.vue')['default']
-    ReturnPlayerIntoGameModal: typeof import('./components/ReturnPlayerIntoGameModal.vue')['default']
+    ReturnPlayerIntoGameModal: typeof import('./components/active-game/ReturnPlayerIntoGameModal.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Tabs: typeof import('./components/Tabs.vue')['default']
