@@ -52,6 +52,7 @@
                 label="Cash IN"
                 :rules="[requiredRule]"
                 type="number"
+                step="10"
                 :min="0"
                 v-model="editableValues.cashIn"
               />
@@ -62,6 +63,7 @@
                 label="Cash OUT"
                 :rules="[requiredRule]"
                 type="number"
+                step="10"
                 :min="0"
                 v-model="editableValues.cashOut"
               />

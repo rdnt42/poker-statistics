@@ -2,6 +2,7 @@ package org.marowak.pokerstatisticsback.service
 
 import jakarta.transaction.Transactional
 import org.marowak.pokerstatisticsback.dto.request.PatchPlayerInGameDto
+import org.marowak.pokerstatisticsback.dto.request.PlayerForActiveGameDto
 import org.marowak.pokerstatisticsback.entity.PlayerInGame
 import org.marowak.pokerstatisticsback.entity.type.PlayerStatusType
 import org.marowak.pokerstatisticsback.repository.PlayerInGameRepository
@@ -14,15 +15,29 @@ class PlayerInGameService(
     private val playerInGameRepository: PlayerInGameRepository
 ) {
     @Transactional
-    fun create(playerId: UUID, activeGameId: UUID, cashIn: Int): PlayerInGame {
+    fun create(playerId: UUID, gameId: UUID, cashIn: Int): PlayerInGame {
         val player = PlayerInGame(
             id = playerId,
             cashIn = cashIn,
-            activeGameId = activeGameId,
+            activeGameId = gameId,
             status = PlayerStatusType.ACTIVE,
         )
 
         return playerInGameRepository.save(player)
+    }
+
+    @Transactional
+    fun createList(requestPlayers: List<PlayerForActiveGameDto>, gameId: UUID): List<PlayerInGame> {
+        val players = requestPlayers.map {
+            PlayerInGame(
+                id = it.id,
+                activeGameId = gameId,
+                cashIn = it.cashIn,
+                status = PlayerStatusType.ACTIVE,
+            )
+        }
+
+        return playerInGameRepository.saveAll(players)
     }
 
     fun findByPlayerIdOrNull(id: UUID): PlayerInGame? {

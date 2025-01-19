@@ -6,6 +6,7 @@ import type {AddExistedPlayerToGameRequest} from "@/types/AddExistedPlayerToGame
 import type {FinishGameForPlayerRequest} from "@/types/FinishGameForPlayerRequest";
 import type {ReturnPlayerIntoGameRequest} from "@/types/ReturnPlayerIntoGameRequest";
 import type {PlayerInGameUpdateRequest} from "@/types/PlayerInGameUpdateRequest";
+import type {CreateNewGameRequest} from "@/types/CreateNewGameRequest";
 
 class PokerService {
   async getAllActiveGames(): Promise<ActiveGameFullResponse[]> {
@@ -78,6 +79,15 @@ class PokerService {
     const request: PlayerInGameUpdateRequest = {...options};
     const url = `/api/v1/active-games/${activeGameId}/players-in-game/${playerId}`;
     await pokerClient.patch(url, request);
+  }
+
+  async createNewGame(
+    players: { id: string, cashIn: number }[],
+  ): Promise<void> {
+    const request: CreateNewGameRequest = {players}
+    console.log('createNewGame', request);
+    const url = `/api/v1/active-games`;
+    await pokerClient.post(url, request);
   }
 
 }

@@ -1,10 +1,7 @@
 package org.marowak.pokerstatisticsback.service
 
 import jakarta.transaction.Transactional
-import org.marowak.pokerstatisticsback.dto.request.AddExistedPlayerToGameDto
-import org.marowak.pokerstatisticsback.dto.request.FinishGameForPlayerDto
-import org.marowak.pokerstatisticsback.dto.request.PatchPlayerInGameDto
-import org.marowak.pokerstatisticsback.dto.request.ReturnPlayerIntoGameDto
+import org.marowak.pokerstatisticsback.dto.request.*
 import org.marowak.pokerstatisticsback.dto.response.*
 import org.marowak.pokerstatisticsback.entity.ActiveGame
 import org.marowak.pokerstatisticsback.repository.ActiveGameRepository
@@ -24,10 +21,14 @@ class ActiveGameService(
             .map { it.toDto() }
     }
 
-    fun createNewGame(): ActiveGameDto {
+    @Transactional
+    fun createNewGame(request: CreateActiveGameDto): ActiveGameDto {
         val game = ActiveGame(UUID.randomUUID(), OffsetDateTime.now(), emptyList())
+        activeGameRepository.save(game)
+        playerInGameService.createList(request.players, game.id)
+
         return activeGameRepository
-            .save(game)
+            .findById(game.id).orElseThrow()
             .toDto()
     }
 
@@ -74,7 +75,7 @@ class ActiveGameService(
         check(player.activeGameId == gameId) {
             "Player $playerId already have another active game"
         }
-            check(cashIn >= player.cashIn) {
+        check(cashIn >= player.cashIn) {
             "Player cash IN value cannot be less than the current state"
         }
 
@@ -94,8 +95,11 @@ class ActiveGameService(
     @Transactional
     fun finishGame(gameId: UUID) {
         val game = activeGameRepository.findById(gameId).orElseThrow()
-        playerService.updatePlayersCash(game.activePlayers)
-        historicalGameService.create(game.activePlayers, game.startDate)
+        if (game.activePlayers.isNotEmpty()) {
+            playerService.updatePlayersCash(game.activePlayers)
+            historicalGameService.create(game.activePlayers, game.startDate)
+        }
+
         this.activeGameRepository.deleteById(gameId)
     }
 }

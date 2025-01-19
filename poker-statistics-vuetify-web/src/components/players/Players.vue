@@ -18,7 +18,7 @@ const headers = [
   {title: 'Nickname', value: 'nickname'},
   {title: 'Total IN', value: 'totalIn'},
   {title: 'Total OUT', value: 'totalOut'},
-  {title: 'Profit', key: 'profit', value: (item: PlayerResponse) => `${item.totalIn - item.totalOut}`},
+  {title: 'Profit', key: 'profit', value: (item: PlayerResponse) => `${item.totalOut - item.totalIn}`},
 ];
 
 onMounted(async () => {

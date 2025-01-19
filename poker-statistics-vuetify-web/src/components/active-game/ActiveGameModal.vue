@@ -50,10 +50,13 @@ const activeGameStore = useActiveGameStore()
 
 // TODO rework
 watchEffect(() => {
-  if (activeGameStore.needToUpdate() && props.selectedRow) {
+  if (activeGameStore.isNeedToUpdate() && props.selectedRow) {
     fetchActiveGameFullInfo(props.selectedRow.id);
   }
-})
+  if (!activeGameStore.isDataPresented()) {
+    closeModal();
+  }
+});
 watchEffect(() => {
   if (props.selectedRow) {
     fetchActiveGameFullInfo(props.selectedRow.id);

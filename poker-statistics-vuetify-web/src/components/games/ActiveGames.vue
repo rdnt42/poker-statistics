@@ -9,7 +9,7 @@
   >
     <template v-slot:item="{ item }">
       <tr @dblclick="onRowDblClick(item)">
-        <td>{{ item.startDate }}</td>
+        <td>{{ new Date(item.startDate).toLocaleString() }}</td>
       </tr>
     </template>
   </v-data-table>
@@ -21,24 +21,30 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from "vue";
+import {ref} from "vue";
 import pokerService from "@/services/PokerService";
 import type {ActiveGameFullResponse} from "@/types/ActiveGameFullResponse";
+import {useActiveGamesStore} from "@/stores/app";
+
+const activeGamesStore = useActiveGamesStore();
 
 const games = ref<ActiveGameFullResponse[]>([]);
 const headers = [
   {
     title: 'Start date',
     key: 'startDate',
-    value: (item: ActiveGameFullResponse) => new Date(item.startDate).toLocaleString()
   },
 ];
 
-onMounted(async () => {
-  try {
-    games.value = await pokerService.getAllActiveGames();
-  } catch (error) {
-    console.error("Error when fetch games:", error);
+const updateActiveGames = async () => {
+  games.value = await pokerService.getAllActiveGames();
+  activeGamesStore.setActualData();
+};
+
+watchEffect(async () => {
+  if (activeGamesStore.isNeedToUpdate()) {
+    console.log('update active games');
+    await updateActiveGames();
   }
 });
 

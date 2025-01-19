@@ -25,9 +25,31 @@ export const useActiveGameStore =
       return data.value !== 'not-presented';
     };
 
-    const needToUpdate = () => {
+    const isNeedToUpdate = () => {
       return data.value === 'non-actual';
     };
 
-    return {notifyDataUpdated, setActualData, clearData, isDataPresented, needToUpdate};
+    return {notifyDataUpdated, setActualData, clearData, isDataPresented, isNeedToUpdate};
+  });
+
+export const useActiveGamesStore =
+  defineStore('activeGamesStore', () => {
+    const isActual = ref<boolean>(false);
+
+    const setActualData = () => {
+      console.log('setActualData true');
+      isActual.value = true;
+    };
+
+    const setNeedToUpdate = () => {
+      isActual.value = false;
+    };
+
+    const isNeedToUpdate = () => {
+      console.log('check isNeedToUpdate');
+
+      return !(isActual.value);
+    }
+
+    return {setActualData, setNeedToUpdate, isNeedToUpdate};
   });

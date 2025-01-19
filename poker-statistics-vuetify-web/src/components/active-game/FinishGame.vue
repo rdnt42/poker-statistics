@@ -13,17 +13,19 @@
 <script lang="ts" setup>
 
 import pokerService from "@/services/PokerService";
-import {useActiveGameStore} from "@/stores/app";
+import {useActiveGamesStore, useActiveGameStore} from "@/stores/app";
 
 const props = defineProps<{
   gameId: string,
 }>();
 
 const activeGameStore = useActiveGameStore();
+const activeGamesStore = useActiveGamesStore();
 
 const endGameHandle = async () => {
   await pokerService.finishGame(props.gameId);
-  activeGameStore.notifyDataUpdated();
+  activeGameStore.clearData();
+  activeGamesStore.setNeedToUpdate();
 };
 
 </script>

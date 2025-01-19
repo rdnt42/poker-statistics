@@ -1,5 +1,6 @@
 package org.marowak.pokerstatisticsback.controller
 
+import org.marowak.pokerstatisticsback.dto.request.CreateActiveGameDto
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameDto
 import org.marowak.pokerstatisticsback.dto.response.ActiveGameFullDto
 import org.marowak.pokerstatisticsback.service.ActiveGameService
@@ -27,8 +28,8 @@ class ActiveGameController(
     }
 
     @PostMapping
-    fun create(): ActiveGameDto {
-        return activeGameService.createNewGame()
+    fun create(@RequestBody request: CreateActiveGameDto): ActiveGameDto {
+        return activeGameService.createNewGame(request)
     }
 
     @PostMapping("/{id}/finish")

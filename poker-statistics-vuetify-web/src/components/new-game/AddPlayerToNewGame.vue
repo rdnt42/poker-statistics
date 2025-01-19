@@ -12,6 +12,7 @@
         v-model="playerValues.cashIn"
         label="Cash IN"
         type="number"
+        step="10"
         :min="0"
         :default="defaultCashIn"
         required
@@ -46,7 +47,7 @@ type ExistedPlayer = {
 type AddPlayerValues = {
   id: string,
   name: string,
-  nickname: string ,
+  nickname: string,
   cashIn: number,
 };
 
@@ -57,7 +58,7 @@ const props = defineProps<{
   index: number,
 }>();
 
-const emit = defineEmits(['selectNewPlayer']);
+const emit = defineEmits(['selectNewPlayer', 'updateCashIn']);
 
 const playerValues = ref<AddPlayerValues>({
   id: null,
@@ -74,9 +75,8 @@ const playerTitleProps = (item: ExistedPlayer) => {
   }
 };
 
-
 watch(selectedPlayer, (newValue: ExistedPlayer | null) => {
-  if(newValue === null) return;
+  if (newValue === null) return;
 
   playerValues.value.id = newValue.id;
   playerValues.value.name = newValue.name;
@@ -84,5 +84,9 @@ watch(selectedPlayer, (newValue: ExistedPlayer | null) => {
   playerValues.value.cashIn = defaultCashIn;
 
   emit('selectNewPlayer', playerValues.value, props.index);
+});
+
+watch(playerValues.value, () => {
+  emit('updateCashIn', playerValues.value.cashIn, props.index);
 });
 </script>

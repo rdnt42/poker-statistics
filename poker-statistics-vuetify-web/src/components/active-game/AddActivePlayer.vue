@@ -24,8 +24,9 @@
         v-model="playerValues.cashIn"
         label="Cash IN"
         type="number"
-        :disabled="isInProcessing"
+        step="10"
         :min="0"
+        :disabled="isInProcessing"
         :default="defaultCashIn"
         required
         :rules="[requiredRule]"

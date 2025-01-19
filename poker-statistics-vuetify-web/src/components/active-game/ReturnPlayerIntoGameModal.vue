@@ -52,6 +52,7 @@
                 label="Cash IN"
                 :rules="[requiredRule]"
                 type="number"
+                step="10"
                 :min="player.cashIn"
                 v-model="editableValues.cashIn"
               />

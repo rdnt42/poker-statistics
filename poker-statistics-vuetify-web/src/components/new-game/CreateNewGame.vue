@@ -26,7 +26,9 @@
                     <AddPlayerToNewGame
                       :players="players"
                       :index="index"
+                      :selected-player="row"
                       @selectNewPlayer="selectNewPlayerHandler"
+                      @updateCashIn="updateCashInHandler"
                     />
                   </v-col>
                   <v-col cols="1" class="d-flex justify-end">
@@ -66,6 +68,7 @@
             text="Create game"
             variant="tonal"
             @click="createNewGame"
+            :disabled="isEmptySelectedPlayers"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -76,6 +79,7 @@
 <script lang="ts" setup>
 import {onMounted, shallowRef} from 'vue'
 import pokerService from "@/services/PokerService";
+import {useActiveGamesStore} from "@/stores/app";
 
 type PlayerRow = {
   rowId: string,
@@ -90,29 +94,25 @@ const players = ref<PlayerRow[]>();
 const rows = ref<PlayerRow[] | { rowId: string }[]>([]);
 
 onMounted(async () => {
-  try {
-    players.value = (await pokerService.getAllPlayers()).map((p) => ({
-      id: p.id,
-      cashIn: p.id,
-      name: p.name,
-      nickname: p.nickname,
-    }));
-  } catch (error) {
-    console.error("Error when fetch players:", error);
-  }
+  await reset();
 });
+
+const activeGamesStore = useActiveGamesStore();
+
 const createNewGame = async () => {
   let players = rows.value.filter((r) => r.id !== undefined);
-  console.log(players);
-  clear();
+  await pokerService.createNewGame(players);
+  activeGamesStore.setNeedToUpdate();
+  await reset();
   dialog.value = false;
 };
+
 const addRow = (): void => {
   rows.value.push({
     rowId: getNewId(),
   });
-  console.log(`add row, length ${rows.value.length}`);
 };
+
 const removeRow = (index: number): void => {
   const player = rows.value[index];
 
@@ -124,8 +124,14 @@ const removeRow = (index: number): void => {
   rows.value = rows.value.filter((_, i) => i !== index);
 };
 
-const clear = () => {
+const reset = async () => {
   rows.value = [];
+  players.value = (await pokerService.getAllPlayers()).map((p) => ({
+    id: p.id,
+    cashIn: p.id,
+    name: p.name,
+    nickname: p.nickname,
+  })).sort((a, b) => a.name.localeCompare(b.name));
 };
 
 const selectNewPlayerHandler = (player: PlayerRow, index: number) => {
@@ -136,8 +142,17 @@ const selectNewPlayerHandler = (player: PlayerRow, index: number) => {
   }
 };
 
+const updateCashInHandler = (cashIn: PlayerRow, index: number) => {
+  const player: PlayerRow = rows.value[index];
+  player.cashIn = cashIn;
+};
+
 const getNewId = (): string => {
   return crypto.randomUUID();
-}
+};
+
+const isEmptySelectedPlayers = computed((): boolean => {
+  return rows.length === 0 || (rows.value.filter((r) => r.id !== undefined)).length === 0;
+});
 
 </script>
