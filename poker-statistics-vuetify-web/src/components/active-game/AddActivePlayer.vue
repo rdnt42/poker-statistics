@@ -88,7 +88,6 @@ const defaultCashIn = 10;
 const props = defineProps<{
   game: GameData,
 }>();
-const emit = defineEmits(['data-updated']);
 
 const players = ref<ExistedPlayer[]>([]);
 const playerValues = ref<AddPlayerValues>({

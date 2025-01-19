@@ -27,7 +27,7 @@
 
 <script>
 import {markRaw} from "vue";
-import Players from "@/components/Players.vue";
+import Players from "@/components/players/Players.vue";
 import GamesPage from "@/pages/GamesPage.vue";
 
 export default {
