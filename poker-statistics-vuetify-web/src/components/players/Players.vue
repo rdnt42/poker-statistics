@@ -1,4 +1,5 @@
 <template>
+  <CreateNewPlayer/>
   <v-data-table
     :headers="headers"
     :items="players"
@@ -8,9 +9,12 @@
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from "vue";
+import {ref} from "vue";
 import type {PlayerResponse} from "@/types/PlayerResponse";
 import pokerService from "@/services/PokerService";
+import {usePlayersStore} from "@/stores/app";
+
+let playersStore = usePlayersStore();
 
 const players = ref<PlayerResponse[]>([]);
 const headers = [
@@ -21,11 +25,15 @@ const headers = [
   {title: 'Profit', key: 'profit', value: (item: PlayerResponse) => `${item.totalOut - item.totalIn}`},
 ];
 
-onMounted(async () => {
-  try {
-    players.value = await pokerService.getAllPlayers();
-  } catch (error) {
-    console.error("Error when fetch games:", error);
+const updatePlayers = async () => {
+  players.value = (await pokerService.getAllPlayers())
+    .sort((a, b) => a.name.localeCompare(b.name));
+  playersStore.setActualData();
+}
+
+watchEffect(async () => {
+  if (playersStore.isNeedToUpdate()) {
+    await updatePlayers();
   }
 });
 

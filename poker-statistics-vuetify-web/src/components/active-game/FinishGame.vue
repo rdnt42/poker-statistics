@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 
 import pokerService from "@/services/PokerService";
-import {useActiveGamesStore, useActiveGameStore} from "@/stores/app";
+import {useActiveGamesStore, useActiveGameStore, usePlayersStore} from "@/stores/app";
 
 const props = defineProps<{
   gameId: string,
@@ -21,11 +21,13 @@ const props = defineProps<{
 
 const activeGameStore = useActiveGameStore();
 const activeGamesStore = useActiveGamesStore();
+const playersStore = usePlayersStore();
 
 const endGameHandle = async () => {
   await pokerService.finishGame(props.gameId);
   activeGameStore.clearData();
   activeGamesStore.setNeedToUpdate();
+  playersStore.setNeedToUpdate();
 };
 
 </script>

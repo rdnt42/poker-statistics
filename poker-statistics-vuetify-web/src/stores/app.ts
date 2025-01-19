@@ -37,7 +37,6 @@ export const useActiveGamesStore =
     const isActual = ref<boolean>(false);
 
     const setActualData = () => {
-      console.log('setActualData true');
       isActual.value = true;
     };
 
@@ -46,8 +45,25 @@ export const useActiveGamesStore =
     };
 
     const isNeedToUpdate = () => {
-      console.log('check isNeedToUpdate');
+      return !(isActual.value);
+    }
 
+    return {setActualData, setNeedToUpdate, isNeedToUpdate};
+  });
+
+export const usePlayersStore =
+  defineStore('playersStore', () => {
+    const isActual = ref<boolean>(false);
+
+    const setActualData = () => {
+      isActual.value = true;
+    };
+
+    const setNeedToUpdate = () => {
+      isActual.value = false;
+    };
+
+    const isNeedToUpdate = () => {
       return !(isActual.value);
     }
 

@@ -14,6 +14,7 @@ declare module 'vue' {
     AddPlayerToNewGame: typeof import('./components/new-game/AddPlayerToNewGame.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     CreateNewGame: typeof import('./components/new-game/CreateNewGame.vue')['default']
+    CreateNewPlayer: typeof import('./components/players/CreateNewPlayer.vue')['default']
     EditPlayerInGame: typeof import('./components/active-game/EditPlayerInGame.vue')['default']
     FinishGame: typeof import('./components/active-game/FinishGame.vue')['default']
     FinishGameForPlayerModal: typeof import('./components/active-game/FinishGameForPlayerModal.vue')['default']

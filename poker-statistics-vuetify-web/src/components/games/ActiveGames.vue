@@ -43,7 +43,6 @@ const updateActiveGames = async () => {
 
 watchEffect(async () => {
   if (activeGamesStore.isNeedToUpdate()) {
-    console.log('update active games');
     await updateActiveGames();
   }
 });

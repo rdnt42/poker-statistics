@@ -66,6 +66,7 @@
 import {ref, onMounted} from 'vue';
 import pokerService from "@/services/PokerService";
 import {requiredRule} from "@/components/utils";
+import {useActiveGameStore} from "@/stores/app";
 
 type ExistedPlayer = {
   id: string,
@@ -103,6 +104,8 @@ const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
 const submitting = ref<boolean>(false);
 
+let activeGameStore = useActiveGameStore();
+
 const fetchGame = async () => {
   loading.value = true;
   error.value = null;
@@ -132,8 +135,8 @@ const addPlayerToGame = async () => {
       // TODO add new player
       console.log(`add new player ${playerValues.value.name}, ${playerValues.value.nickname}, ${playerValues.value.cashIn}`)
     }
-    emit('data-updated');
     // TODO show info about result
+    activeGameStore.notifyDataUpdated();
     resetForm();
   } catch (err: any) {
     alert(`Failed to add player: ${err.message}`);

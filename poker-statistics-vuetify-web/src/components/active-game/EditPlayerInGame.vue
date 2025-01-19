@@ -86,7 +86,7 @@
             color="primary"
             text="Save changes"
             variant="tonal"
-            @click="closeModal"
+            @click="editPlayerHandler"
           ></v-btn>
         </v-card-actions>
       </v-card>
@@ -120,7 +120,7 @@ const activeGameStore = useActiveGameStore();
 
 const dialog = shallowRef(false)
 
-const closeModal = async () => {
+const editPlayerHandler = async () => {
   dialog.value = false;
   await pokerService.updateActivePlayer(props.gameId, props.player.id, {
     cashIn: editableValues.value.cashIn,
